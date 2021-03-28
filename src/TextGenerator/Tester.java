@@ -1,7 +1,7 @@
 package TextGenerator;
 
 import TextGenerator.handlers.Reader;
-import TextGenerator.handlers.TxtCleaner;
+import TextGenerator.handlergit add -As.TxtCleaner;
 import TextGenerator.parsers.XslxParser;
 
 public class Tester {
