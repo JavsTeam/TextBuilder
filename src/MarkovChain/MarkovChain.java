@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.CellType;
 
 public class MarkovChain {
     private static final String PATH_TEXT1 = "src/OtherWorks/Projects/MarkovChain/data/text1.txt";
-    private static final String PATH_TEXT2 = "D:\\Projects\\Java\\TextGenerator\\src\\TextGenerator\\data\\lists\\jumoreski.txt";
+    private static final String PATH_TEXT2 = "src/MarkovChain/data/text2.txt";
 
     public static void main(String[] args) {
         WordsHandler wordsHandler = new WordsHandler();
