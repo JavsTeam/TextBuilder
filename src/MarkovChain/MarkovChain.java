@@ -21,7 +21,6 @@ public class MarkovChain {
         //WordsHandler.parseExcelTo("src/OtherWorks/Projects/MarkovChain/data/bugurts.xls", PATH_TEXT2);
     }
 
-
     static class WordsHandler {
         ArrayList<Word> words = new ArrayList<>();
         String base;

@@ -2,6 +2,7 @@ package TextGenerator.handlers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 
 public class FilesHandler {
     private static final File SRC_DIR = new File("src");
@@ -28,8 +29,9 @@ public class FilesHandler {
     public static File create(String fileName, String pathToDirectory) {
         File newFile = new File(pathToDirectory + "/" + fileName);
         try {
-            return newFile.createNewFile() ? newFile : null;
-        } catch (IOException e) {
+            if (newFile.createNewFile()) return newFile;
+            throw new FileSystemException("Unacceptable file name: " + fileName);
+        } catch (IOException e ) {
             e.printStackTrace();
         }
         return null;

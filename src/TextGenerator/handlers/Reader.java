@@ -1,6 +1,7 @@
 package TextGenerator.handlers;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -20,5 +21,9 @@ public class Reader {
             e.printStackTrace();
         }
         return text.toString();
+    }
+
+    public static String readTxt(File txtFile) {
+        return readTxt(txtFile.getPath());
     }
 }

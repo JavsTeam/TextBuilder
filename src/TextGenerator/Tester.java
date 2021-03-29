@@ -9,6 +9,16 @@ public class Tester {
 
     public static void main(String[] args) {
 
+        TextGenerator.Word w = new TextGenerator.Word("a");
+        w.addNextWord("b");
+        w.addNextWord("b");
+        w.addNextWord("b");
+        w.addNextWord("c");
+        w.addNextWord("c");
+        w.addNextWord("e");
+        w.addNextWord("e");
+        w.addNextWord("f");
+
 
 
         /*
@@ -22,7 +32,5 @@ public class Tester {
 
         System.out.println(Reader.readTxt(PATH_JUMORESKI_TXT));
          */
-
-
     }
 }
