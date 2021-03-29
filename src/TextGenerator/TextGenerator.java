@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class TextGenerator {
-    ArrayList<Word> words = new ArrayList<>();
+    private final ArrayList<Word> words = new ArrayList<>();
     private final String sourceText;
 
     public TextGenerator(String sourceTxtPath) {
@@ -18,12 +18,29 @@ public class TextGenerator {
     public TextGenerator(File sourceTxtFile) {
         this(sourceTxtFile.getPath());
     }
-
+/*
     public String getText(int length) {
         StringBuilder text = new StringBuilder();
         Word current = getFirstWord();
         for (int i = 0; i < length; i++) {
             text.append(current.getWord() + " ");
+            current = findWord(current.getNextWord());
+        }
+        return text.toString();
+    }
+*/
+    public String getText(int length) {
+        StringBuilder text = new StringBuilder();
+        Word current = getFirstWord();
+        for (int i = 0; i < length; i++) {
+            if(current.getWord().contains(".") && !current.getWord().contains("\n")) {
+                text.append(current.getWord() + "\n");
+                if( i > 10) {
+                    i = length;
+                }
+            } else {
+                text.append(current.getWord() + " ");
+            }
             current = findWord(current.getNextWord());
         }
         return text.toString();
