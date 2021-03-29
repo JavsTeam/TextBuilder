@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class XslxParser {
-    public static void toTxt(String pathToXslx, String pathToTxt) {
+    public static void parseToTxt(String pathToXslx, String pathToTxt) {
         try {
             XSSFWorkbook book = new XSSFWorkbook(new FileInputStream(pathToXslx));
             StringBuilder text = new StringBuilder();

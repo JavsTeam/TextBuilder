@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TxtCleaner {
+public class Cleaner {
     public static final String[] defaultArray = {" ", "\n", "http", "#"};
     public static final ArrayList<String> defaultList = new ArrayList<>(Arrays.asList(defaultArray));
 
@@ -22,7 +22,7 @@ public class TxtCleaner {
                 outer:
                 for (String word : words) {
                     for (String string : forbidden) {
-                        if (word.contains(string)) {
+                        if (word.contains(string) || word.isEmpty()) {
                             continue outer;
                         }
                     }
