@@ -18,38 +18,38 @@ public class TextGenerator {
     public TextGenerator(File sourceTxtFile) {
         this(sourceTxtFile.getPath());
     }
-/*
-    public String getText(int length) {
+
+    public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
         Word current = getFirstWord();
-        for (int i = 0; i < length; i++) {
-            text.append(current.getWord() + " ");
-            current = findWord(current.getNextWord());
-        }
-        return text.toString();
-    }
-*/
-    public String getText(int length) {
-        StringBuilder text = new StringBuilder();
-        Word current = getFirstWord();
-        for (int i = 0; i < length; i++) {
-            if(current.getWord().contains(".") && !current.getWord().contains("\n")) {
-                text.append(current.getWord() + "\n");
-                if( i > 10) {
-                    i = length;
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            String word = current.getWord();
+            if (word.length() > 2 && word.contains(".") || word.contains("?") || word.contains("!")) {
+                word += "\n";
+                if (i > minLength) {
+                    text.append(word);
+                    break;
                 }
             } else {
-                text.append(current.getWord() + " ");
+                word += " ";
             }
+            text.append(word);
             current = findWord(current.getNextWord());
         }
         return text.toString();
     }
 
+    public void printText(int minLength) {
+        System.out.println(getText(minLength));
+    }
+
+
     private Word getFirstWord() {
         ArrayList<Word> capital = new ArrayList<>();
         for (Word word : words) {
-            if (word.getWord().length() > 0 && word.getWord().charAt(0) > 'A' && word.getWord().charAt(0) < 'Я') {
+            if (word.getWord().length() > 0 &&
+                    word.getWord().charAt(0) > 'A' &&
+                    word.getWord().charAt(0) < 'Я') {
                 capital.add(word);
             }
         }
@@ -58,7 +58,6 @@ public class TextGenerator {
 
     private void parseWordsFromTxt() {
         String[] textWords = sourceText.split(" ");
-
         String previousWord = textWords[0];
         addWord(previousWord);
         for (int i = 1; i < textWords.length; i++) {

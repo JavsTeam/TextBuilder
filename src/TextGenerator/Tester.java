@@ -13,6 +13,6 @@ public class Tester {
 
     public static void main(String[] args) {
         TextGenerator textGenerator = new TextGenerator(JUMORESKI);
-        System.out.println(textGenerator.getText(300));
+        textGenerator.printText(10);
     }
 }
