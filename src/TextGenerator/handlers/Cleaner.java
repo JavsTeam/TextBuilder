@@ -1,17 +1,14 @@
 package TextGenerator.handlers;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Cleaner {
     public static final String[] defaultArray = {" ", "\n", "http", "#"};
-    public static final ArrayList<String> defaultList = new ArrayList<>(Arrays.asList(defaultArray));
 
-    public static void deleteIfContains(List<String> forbidden, String pathToTxt) {
+    public static void deleteFromFileIfContains(String[] forbidden, String pathToTxt) {
         StringBuilder text = new StringBuilder();
 
         try (BufferedReader buf = new BufferedReader(new FileReader(pathToTxt))) {
@@ -28,7 +25,6 @@ public class Cleaner {
                     }
                     text.append(word + " ");
                 }
-                text.append("\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +33,24 @@ public class Cleaner {
         Writer.writeTextTo(text.toString(), pathToTxt);
     }
 
-    public static void deleteIfContains(String[] forbidden, String pathToTxt) {
-        deleteIfContains(Arrays.asList(forbidden), pathToTxt);
+    public static void deleteFromFileIfContains(String[] forbidden, File txt) {
+        deleteFromFileIfContains(forbidden, txt.getPath());
+    }
+
+    public static String deleteFromTextIfContains(String[] forbidden, String text) {
+        StringBuilder result = new StringBuilder();
+        String[] words = text.split(" ");
+
+        outer:
+        for (String word : words) {
+            for (String string : forbidden) {
+                if (word.contains(string) || word.isEmpty()) {
+                    continue outer;
+                }
+            }
+            result.append(word + " ");
+        }
+        return result.toString();
     }
 }
+
