@@ -40,7 +40,6 @@ public class TextGenerator {
         return Files.isFileExist(fileName);
     }
 
-
     private void saveStateTo(String fileName) {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         String state = builder.create().toJson(words);
@@ -57,10 +56,8 @@ public class TextGenerator {
         this(sourceTxtFile.getPath());
     }
 
-
-    String[] conditionsOfEnd = {".", "?", "!"};
-    String[] conditionsOfNext = {"一", "—", "-"};
-
+    private static final  String[] conditionsOfEnd = {".", "?", "!"};
+    private static final  String[] conditionsOfNext = {"一", "—", "-"};
 
     // TODO: refactor
     public String getText(int minLength) {
@@ -72,10 +69,10 @@ public class TextGenerator {
             for (String condition : conditionsOfEnd) {
                 if (word.contains(condition)) {
                     text.append(word + "\n");
-                    current = findWord(current.getNextWord());
                     if (word.length() > 2 && i > minLength) {
                         break outer;
                     }
+                    current = findWord(current.getNextWord());
                     continue outer;
                 }
             }
@@ -95,7 +92,6 @@ public class TextGenerator {
     public void printText(int minLength) {
         System.out.println(getText(minLength));
     }
-
 
     private Word getFirstWord() {
         ArrayList<Word> capital = new ArrayList<>();
