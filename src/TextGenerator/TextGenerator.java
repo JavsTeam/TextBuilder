@@ -20,8 +20,8 @@ public class TextGenerator {
             loadSavedState(stateName);
         } else {
             parseWordsFromText(Reader.readTxt(sourceTxtPath));
+            saveStateTo(stateName);
         }
-        saveStateTo(stateName);
     }
 
     private String getStateFileName(String sourcePath) {
@@ -57,21 +57,36 @@ public class TextGenerator {
         this(sourceTxtFile.getPath());
     }
 
+
+    String[] conditionsOfEnd = {".", "?", "!"};
+    String[] conditionsOfNext = {"一", "—", "-"};
+
+
+    // TODO: refactor
     public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
         Word current = getFirstWord();
+        outer:
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             String word = current.getWord();
-            if (word.length() > 2 && word.contains(".") || word.contains("?") || word.contains("!")) {
-                word += "\n";
-                if (i > minLength) {
-                    text.append(word);
-                    break;
+            for (String condition : conditionsOfEnd) {
+                if (word.contains(condition)) {
+                    text.append(word + "\n");
+                    current = findWord(current.getNextWord());
+                    if (word.length() > 2 && i > minLength) {
+                        break outer;
+                    }
+                    continue outer;
                 }
-            } else {
-                word += " ";
             }
-            text.append(word);
+            for (String condition : conditionsOfNext) {
+                if (word.contains(condition)) {
+                    text.append("\n" + word + " ");
+                    current = findWord(current.getNextWord());
+                    continue outer;
+                }
+            }
+            text.append(word + " ");
             current = findWord(current.getNextWord());
         }
         return text.toString();
