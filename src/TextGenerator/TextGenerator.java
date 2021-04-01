@@ -65,6 +65,7 @@ public class TextGenerator {
         Writer.writeTextTo(state, file);
     }
 
+
     private static final String[] conditionsOfEnd = {".", "?", "!"};
     private static final String[] conditionsOfNext = {"一", "—", "-"};
 
