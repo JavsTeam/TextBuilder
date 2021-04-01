@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 
-public class FilesHandler {
+public class Files {
     public static File getFile(String fileName) {
         File file;
         return (file = recursiveFileSearch(Dir.SRC.get(), fileName)) != null ?
