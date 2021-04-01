@@ -14,21 +14,34 @@ import java.util.Random;
 public class TextGenerator {
     private ArrayList<Word> words = new ArrayList<>();
 
-    public TextGenerator(String sourceTxtPath) {
-        String stateName = getStateFileName(sourceTxtPath);
+    public TextGenerator(int depth, String sourceTxtPath) {
+        String stateName = getStateFileName(depth, sourceTxtPath);
         if (isSavedStateExist(stateName)) {
             loadSavedState(stateName);
         } else {
-            parseWordsFromText(Reader.readTxt(sourceTxtPath));
+            parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
             saveStateTo(stateName);
         }
     }
 
-    private String getStateFileName(String sourcePath) {
-        return "state-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
+    public TextGenerator(int depth, File sourceTxtFile) {
+        this(depth, sourceTxtFile.getPath());
     }
 
-    private static final TypeToken<ArrayList<Word>> STATE_TYPE = new TypeToken<ArrayList<Word>>() {
+    public TextGenerator(String sourceTxtPath) {
+        this(1, sourceTxtPath);
+    }
+
+    public TextGenerator(File sourceTxtFile) {
+        this(1, sourceTxtFile);
+    }
+
+
+    private String getStateFileName(int depth, String sourcePath) {
+        return "state-depth-" + depth + "-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
+    }
+
+    private static final TypeToken<ArrayList<Word>> STATE_TYPE = new TypeToken<>() {
     };
 
     private void loadSavedState(String stateName) {
@@ -39,7 +52,6 @@ public class TextGenerator {
     private boolean isSavedStateExist(String fileName) {
         return Files.isFileExist(fileName);
     }
-
 
     private void saveStateTo(String fileName) {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
@@ -53,14 +65,8 @@ public class TextGenerator {
         Writer.writeTextTo(state, file);
     }
 
-    public TextGenerator(File sourceTxtFile) {
-        this(sourceTxtFile.getPath());
-    }
-
-
-    String[] conditionsOfEnd = {".", "?", "!"};
-    String[] conditionsOfNext = {"一", "—", "-"};
-
+    private static final String[] conditionsOfEnd = {".", "?", "!"};
+    private static final String[] conditionsOfNext = {"一", "—", "-"};
 
     // TODO: refactor
     public String getText(int minLength) {
@@ -81,7 +87,10 @@ public class TextGenerator {
             }
             for (String condition : conditionsOfNext) {
                 if (word.contains(condition)) {
-                    text.append("\n" + word + " ");
+                    if(text.toString().lastIndexOf("\n") != text.toString().length() - 1) {
+                        text.append("\n");
+                    }
+                    text.append(word + " ");
                     current = findWord(current.getNextWord());
                     continue outer;
                 }
@@ -96,7 +105,6 @@ public class TextGenerator {
         System.out.println(getText(minLength));
     }
 
-
     private Word getFirstWord() {
         ArrayList<Word> capital = new ArrayList<>();
         for (Word word : words) {
@@ -109,12 +117,44 @@ public class TextGenerator {
         return capital.get(new Random().nextInt(capital.size()));
     }
 
-    private void parseWordsFromText(String text) {
+    /*
+        private void parseWordsFromText(int depth, String text) {
+            String[] textWords = text.split(" ");
+            String previousWord = textWords[0];
+            addWord(previousWord);
+            for (int i = 1; i < textWords.length; i++) {
+                String currentWord = textWords[i];
+                updateWords(previousWord, currentWord);
+                previousWord = currentWord;
+            }
+        }
+    */
+
+    private void parseWordsFromText(int depth, String text) {
         String[] textWords = text.split(" ");
-        String previousWord = textWords[0];
+        StringBuilder previousWord = new StringBuilder(textWords[0]);
+        for (int i = 1; i < depth; i++) {
+            previousWord.append(" " + textWords[i]);
+        }
+
+        addWord(previousWord.toString());
+        for (int i = depth; i < textWords.length; i++) {
+            StringBuilder currentWord = new StringBuilder(textWords[i]);
+            for (int j = 1; j < depth; j++) {
+                currentWord.append(" " + textWords[++i]);
+            }
+
+            updateWords(previousWord.toString(), currentWord.toString());
+            previousWord = currentWord;
+        }
+    }
+
+    private void parseWordsFromTextDepth2(String text) {
+        String[] textWords = text.split(" ");
+        String previousWord = textWords[0] + " " + textWords[1];
         addWord(previousWord);
-        for (int i = 1; i < textWords.length; i++) {
-            String currentWord = textWords[i];
+        for (int i = 1; i < textWords.length; i += 2) {
+            String currentWord = textWords[i] + " " + textWords[i + 1];
             updateWords(previousWord, currentWord);
             previousWord = currentWord;
         }

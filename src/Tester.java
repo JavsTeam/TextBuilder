@@ -8,7 +8,7 @@ public class Tester {
     private static final File BUGURTS = Files.getFile("bugurts.txt");
 
     public static void main(String[] args) {
-       TextGenerator textGenerator = new TextGenerator(JUMORESKI);
+       TextGenerator textGenerator = new TextGenerator(1, JUMORESKI);
        textGenerator.printText(10);
     }
 }
