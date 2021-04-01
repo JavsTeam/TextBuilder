@@ -1,47 +1,116 @@
 package TextGenerator;
 
+import TextGenerator.handlers.Files;
 import TextGenerator.handlers.Reader;
+import TextGenerator.handlers.Writer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class TextGenerator {
-    ArrayList<Word> words = new ArrayList<>();
-    private final String sourceText;
+    private ArrayList<Word> words = new ArrayList<>();
 
     public TextGenerator(String sourceTxtPath) {
-        sourceText = Reader.readTxt(sourceTxtPath);
-        parseWordsFromTxt();
+        String stateName = getStateFileName(sourceTxtPath);
+        if (isSavedStateExist(stateName)) {
+            loadSavedState(stateName);
+        } else {
+            parseWordsFromText(Reader.readTxt(sourceTxtPath));
+            saveStateTo(stateName);
+        }
+    }
+
+    private String getStateFileName(String sourcePath) {
+        return "state-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
+    }
+
+    private static final TypeToken<ArrayList<Word>> STATE_TYPE = new TypeToken<ArrayList<Word>>() {
+    };
+
+    private void loadSavedState(String stateName) {
+        String state = Reader.readTxt(Files.getFile(stateName));
+        words = new Gson().fromJson(state, STATE_TYPE.getType());
+    }
+
+    private boolean isSavedStateExist(String fileName) {
+        return Files.isFileExist(fileName);
+    }
+
+
+    private void saveStateTo(String fileName) {
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        String state = builder.create().toJson(words);
+        File file;
+        if (Files.isFileExist(fileName)) {
+            file = Files.getFile(fileName);
+        } else {
+            file = Files.createFile(fileName, Files.Dir.PROCESSED.get());
+        }
+        Writer.writeTextTo(state, file);
     }
 
     public TextGenerator(File sourceTxtFile) {
         this(sourceTxtFile.getPath());
     }
 
-    public String getText(int length) {
+
+    String[] conditionsOfEnd = {".", "?", "!"};
+    String[] conditionsOfNext = {"一", "—", "-"};
+
+
+    // TODO: refactor
+    public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
         Word current = getFirstWord();
-        for (int i = 0; i < length; i++) {
-            text.append(current.getWord() + " ");
+        outer:
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            String word = current.getWord();
+            for (String condition : conditionsOfEnd) {
+                if (word.contains(condition)) {
+                    text.append(word + "\n");
+                    current = findWord(current.getNextWord());
+                    if (word.length() > 2 && i > minLength) {
+                        break outer;
+                    }
+                    continue outer;
+                }
+            }
+            for (String condition : conditionsOfNext) {
+                if (word.contains(condition)) {
+                    text.append("\n" + word + " ");
+                    current = findWord(current.getNextWord());
+                    continue outer;
+                }
+            }
+            text.append(word + " ");
             current = findWord(current.getNextWord());
         }
         return text.toString();
     }
 
+    public void printText(int minLength) {
+        System.out.println(getText(minLength));
+    }
+
+
     private Word getFirstWord() {
         ArrayList<Word> capital = new ArrayList<>();
         for (Word word : words) {
-            if (word.getWord().length() > 0 && word.getWord().charAt(0) > 'A' && word.getWord().charAt(0) < 'Я') {
+            if (word.getWord().length() > 0 &&
+                    word.getWord().charAt(0) > 'A' &&
+                    word.getWord().charAt(0) < 'Я') {
                 capital.add(word);
             }
         }
         return capital.get(new Random().nextInt(capital.size()));
     }
 
-    private void parseWordsFromTxt() {
-        String[] textWords = sourceText.split(" ");
-
+    private void parseWordsFromText(String text) {
+        String[] textWords = text.split(" ");
         String previousWord = textWords[0];
         addWord(previousWord);
         for (int i = 1; i < textWords.length; i++) {

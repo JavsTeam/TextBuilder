@@ -12,12 +12,15 @@ public class XslxParser {
         try {
             XSSFWorkbook book = new XSSFWorkbook(new FileInputStream(pathToXslx));
             StringBuilder text = new StringBuilder();
-
             for (Row row : book.getSheetAt(0)) {
-                if (row.getCell(0).getCellType() == CellType.STRING) {
-                    text.append(row.getCell(0).getStringCellValue() + "\n");
-                } else if (row.getCell(0).getCellType() == CellType.NUMERIC) {
-                    text.append(row.getCell(0).getNumericCellValue() + "\n");
+                if(row.getCell(0) != null) {
+                    if (row.getCell(0).getCellType() == CellType.STRING){
+                        text.append(row.getCell(0).getStringCellValue() + "\n");
+                    } else if (row.getCell(0).getCellType() == CellType.NUMERIC) {
+                        text.append(row.getCell(0).getNumericCellValue() + "\n");
+                    }
+                } else {
+                    break;
                 }
             }
 

@@ -1,6 +1,7 @@
 package TextGenerator.handlers;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -11,5 +12,9 @@ public class Writer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void writeTextTo(String text, File txt) {
+        writeTextTo(text, txt.getPath());
     }
 }
