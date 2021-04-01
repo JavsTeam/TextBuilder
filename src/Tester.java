@@ -1,5 +1,4 @@
-package TextGenerator;
-
+import TextGenerator.TextGenerator;
 import TextGenerator.handlers.FilesHandler;
 
 import java.io.File;
