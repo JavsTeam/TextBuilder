@@ -9,6 +9,6 @@ public class Tester {
 
     public static void main(String[] args) {
        TextGenerator textGenerator = new TextGenerator(1, JUMORESKI);
-       textGenerator.printText(10);
+       textGenerator.printText(1000);
     }
 }

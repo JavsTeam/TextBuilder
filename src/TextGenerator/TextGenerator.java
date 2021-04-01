@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,7 +36,6 @@ public class TextGenerator {
     public TextGenerator(File sourceTxtFile) {
         this(1, sourceTxtFile);
     }
-
 
     private String getStateFileName(int depth, String sourcePath) {
         return "state-depth-" + depth + "-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
@@ -74,29 +74,33 @@ public class TextGenerator {
         Word current = getFirstWord();
         outer:
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            String word = current.getWord();
-            for (String condition : conditionsOfEnd) {
-                if (word.contains(condition)) {
-                    text.append(word + "\n");
-                    current = findWord(current.getNextWord());
-                    if (word.length() > 2 && i > minLength) {
-                        break outer;
+            try {
+                String word = current.getWord();
+                for (String condition : conditionsOfEnd) {
+                    if (word.contains(condition)) {
+                        text.append(word + "\n");
+                        current = findWord(current.getNextWord());
+                        if (word.length() > 2 && i > minLength) {
+                            break outer;
+                        }
+                        continue outer;
                     }
-                    continue outer;
                 }
-            }
-            for (String condition : conditionsOfNext) {
-                if (word.contains(condition)) {
-                    if(text.toString().lastIndexOf("\n") != text.toString().length() - 1) {
-                        text.append("\n");
+                for (String condition : conditionsOfNext) {
+                    if (word.contains(condition)) {
+                        if (text.toString().lastIndexOf("\n") != text.toString().length() - 1) {
+                            text.append("\n");
+                        }
+                        text.append(word + " ");
+                        current = findWord(current.getNextWord());
+                        continue outer;
                     }
-                    text.append(word + " ");
-                    current = findWord(current.getNextWord());
-                    continue outer;
                 }
+                text.append(word + " ");
+                current = findWord(current.getNextWord());
+            } catch (UnexpectedException e) {
+                return text.toString();
             }
-            text.append(word + " ");
-            current = findWord(current.getNextWord());
         }
         return text.toString();
     }
@@ -220,11 +224,17 @@ public class TextGenerator {
             nextWords.add(newNextWord);
         }
 
-        private String getNextWord() {
+        // TODO:
+        //  make counter of total weight not to count it every time
+        //  do better fix of NO NEXT WORD situation
+        private String getNextWord() throws UnexpectedException {
             int total = 0;
             // counting total weight
             for (NextWord nextWord : nextWords) {
                 total += nextWord.getCounter();
+            }
+            if (total == 0) {
+                throw new UnexpectedException("NO NEXT WORD");
             }
             // probability distribution depends on frequency of word occurrence
             int result = new Random().nextInt(total) + 1;
