@@ -14,30 +14,17 @@ public class Cleaner {
         try (BufferedReader buf = new BufferedReader(new FileReader(pathToTxt))) {
             String line;
             while ((line = buf.readLine()) != null) {
-                String[] words = line.split(" ");
-
-                outer:
-                for (String word : words) {
-                    for (String string : forbidden) {
-                        if (word.contains(string) || word.isEmpty()) {
-                            continue outer;
-                        }
-                    }
-                    text.append(word + " ");
-                }
+                text.append(line).append(" ");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Writer.writeTextTo(text.toString(), pathToTxt);
+        String result = deleteFromTextIfContains(forbidden, text.toString());
+        Writer.writeTextTo(result, pathToTxt);
     }
 
-    public static void deleteFromFileIfContains(String[] forbidden, File txt) {
-        deleteFromFileIfContains(forbidden, txt.getPath());
-    }
-
-    public static String deleteFromTextIfContains(String[] forbidden, String text) {
+    private static String deleteFromTextIfContains(String[] forbidden, String text) {
         StringBuilder result = new StringBuilder();
         String[] words = text.split(" ");
 
@@ -50,7 +37,20 @@ public class Cleaner {
             }
             result.append(word + " ");
         }
+
         return result.toString();
+    }
+
+    public static void deleteFromFileIfContains(String pathToTxt) {
+        deleteFromFileIfContains(defaultArray, pathToTxt);
+    }
+
+    public static void deleteFromFileIfContains(File txt) {
+        deleteFromFileIfContains(defaultArray, txt);
+    }
+
+    public static void deleteFromFileIfContains(String[] forbidden, File txt) {
+        deleteFromFileIfContains(forbidden, txt.getPath());
     }
 }
 
