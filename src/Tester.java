@@ -1,4 +1,5 @@
 import TextGenerator.TextGenerator;
+import TextGenerator.handlers.Cleaner;
 import TextGenerator.handlers.Files;
 
 import java.io.File;
@@ -8,6 +9,6 @@ public class Tester {
 
     public static void main(String[] args) {
        TextGenerator textGenerator = new TextGenerator(1, JUMORESKI);
-       textGenerator.printText(1000);
+       textGenerator.printText(10);
     }
 }

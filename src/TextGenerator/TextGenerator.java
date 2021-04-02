@@ -65,7 +65,6 @@ public class TextGenerator {
         Writer.writeTextTo(state, file);
     }
 
-
     private static final String[] conditionsOfEnd = {".", "?", "!"};
     private static final String[] conditionsOfNext = {"一", "—", "-"};
 
@@ -122,19 +121,6 @@ public class TextGenerator {
         return capital.get(new Random().nextInt(capital.size()));
     }
 
-    /*
-        private void parseWordsFromText(int depth, String text) {
-            String[] textWords = text.split(" ");
-            String previousWord = textWords[0];
-            addWord(previousWord);
-            for (int i = 1; i < textWords.length; i++) {
-                String currentWord = textWords[i];
-                updateWords(previousWord, currentWord);
-                previousWord = currentWord;
-            }
-        }
-    */
-
     private void parseWordsFromText(int depth, String text) {
         String[] textWords = text.split(" ");
         StringBuilder previousWord = new StringBuilder(textWords[0]);
@@ -153,18 +139,6 @@ public class TextGenerator {
             previousWord = currentWord;
         }
     }
-
-    private void parseWordsFromTextDepth2(String text) {
-        String[] textWords = text.split(" ");
-        String previousWord = textWords[0] + " " + textWords[1];
-        addWord(previousWord);
-        for (int i = 1; i < textWords.length; i += 2) {
-            String currentWord = textWords[i] + " " + textWords[i + 1];
-            updateWords(previousWord, currentWord);
-            previousWord = currentWord;
-        }
-    }
-
     private void updateWords(String previous, String current) {
         findWord(previous).addNextWord(current);
         addWord(current);
