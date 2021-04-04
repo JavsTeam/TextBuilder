@@ -1,4 +1,4 @@
-
+package TextGenerator;
 
 import TextGenerator.TextGenerator;
 import TextGenerator.handlers.Files;

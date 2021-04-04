@@ -1,5 +1,4 @@
 package TextGenerator;
-
 import TextGenerator.handlers.Files;
 import TextGenerator.handlers.Reader;
 import TextGenerator.handlers.Writer;
