@@ -68,7 +68,6 @@ public class TextGenerator {
     private static final String[] conditionsOfEnd = {".", "?", "!"};
     private static final String[] conditionsOfNext = {"一", "—", "-"};
 
-    // TODO: refactor
     public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
         Word current = getFirstWord();
@@ -139,6 +138,7 @@ public class TextGenerator {
             previousWord = currentWord;
         }
     }
+
     private void updateWords(String previous, String current) {
         findWord(previous).addNextWord(current);
         addWord(current);
@@ -199,9 +199,6 @@ public class TextGenerator {
             nextWords.add(newNextWord);
         }
 
-        // TODO:
-        //  make counter of total weight not to count it every time
-        //  do better fix of NO NEXT WORD situation
         private String getNextWord() throws UnexpectedException {
             int total = 0;
             // counting total weight
