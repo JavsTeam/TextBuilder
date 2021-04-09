@@ -1,6 +1,5 @@
-import TextGenerator.TextGenerator;
-import TextGenerator.handlers.Cleaner;
-import TextGenerator.handlers.Files;
+import TextBuilder.TextBuilder;
+import TextBuilder.handlers.Files;
 
 import java.io.File;
 
@@ -8,7 +7,7 @@ public class Tester {
     private static final File JUMORESKI = Files.getFile("jumoreski.txt");
 
     public static void main(String[] args) {
-       TextGenerator textGenerator = new TextGenerator(1, JUMORESKI);
-       textGenerator.printText(10);
+       TextBuilder textBuilder = new TextBuilder(1, JUMORESKI);
+       textBuilder.printText(10);
     }
 }

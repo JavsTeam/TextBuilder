@@ -1,4 +1,4 @@
-package TextGenerator.handlers;
+package TextBuilder.handlers;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +96,7 @@ public class Files {
 
     public enum Dir {
         SRC(new File("src")),
-        PROJECT(getDirectory("TextGenerator")),
+        PROJECT(getDirectory("TextBuilder")),
         DATA(getDirectory("data")),
         PROCESSED(getDirectory("processed")),
         FILES(getDirectory("files"));

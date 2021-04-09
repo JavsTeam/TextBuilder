@@ -1,8 +1,8 @@
-package TextGenerator;
+package TextBuilder;
 
-import TextGenerator.handlers.Files;
-import TextGenerator.handlers.Reader;
-import TextGenerator.handlers.Writer;
+import TextBuilder.handlers.Files;
+import TextBuilder.handlers.Reader;
+import TextBuilder.handlers.Writer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -12,10 +12,10 @@ import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class TextGenerator {
+public class TextBuilder {
     private ArrayList<Word> words = new ArrayList<>();
 
-    public TextGenerator(int depth, String sourceTxtPath) {
+    public TextBuilder(int depth, String sourceTxtPath) {
         String stateName = getStateFileName(depth, sourceTxtPath);
         if (isSavedStateExist(stateName)) {
             loadSavedState(stateName);
@@ -25,15 +25,15 @@ public class TextGenerator {
         }
     }
 
-    public TextGenerator(int depth, File sourceTxtFile) {
+    public TextBuilder(int depth, File sourceTxtFile) {
         this(depth, sourceTxtFile.getPath());
     }
 
-    public TextGenerator(String sourceTxtPath) {
+    public TextBuilder(String sourceTxtPath) {
         this(1, sourceTxtPath);
     }
 
-    public TextGenerator(File sourceTxtFile) {
+    public TextBuilder(File sourceTxtFile) {
         this(1, sourceTxtFile);
     }
 

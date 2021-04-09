@@ -1,4 +1,4 @@
-package TextGenerator.handlers;
+package TextBuilder.handlers;
 
 import java.io.BufferedWriter;
 import java.io.File;
