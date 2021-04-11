@@ -1,10 +1,7 @@
 package TextBuilder;
 
-import TextBuilder.handlers.Files;
 import TextBuilder.handlers.Reader;
-import TextBuilder.handlers.Writer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import TextBuilder.handlers.State;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -16,12 +13,13 @@ public class TextBuilder {
     private ArrayList<Word> words = new ArrayList<>();
 
     public TextBuilder(int depth, String sourceTxtPath) {
-        String stateName = getStateFileName(depth, sourceTxtPath);
-        if (isSavedStateExist(stateName)) {
-            loadSavedState(stateName);
+        State state = new State(depth, sourceTxtPath);
+        if (state.isExist()) {
+            // Do not delete type argument
+            words = state.get(new TypeToken<ArrayList<Word>>() {});
         } else {
             parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
-            saveStateTo(stateName);
+            state.save(words);
         }
     }
 
@@ -35,34 +33,6 @@ public class TextBuilder {
 
     public TextBuilder(File sourceTxtFile) {
         this(1, sourceTxtFile);
-    }
-
-    private String getStateFileName(int depth, String sourcePath) {
-        return "state-depth-" + depth + "-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
-    }
-
-    private static final TypeToken<ArrayList<Word>> STATE_TYPE = new TypeToken<ArrayList<Word>>() {
-    };
-
-    private void loadSavedState(String stateName) {
-        String state = Reader.readTxt(Files.getFile(stateName));
-        words = new Gson().fromJson(state, STATE_TYPE.getType());
-    }
-
-    private boolean isSavedStateExist(String fileName) {
-        return Files.isFileExist(fileName);
-    }
-
-    private void saveStateTo(String fileName) {
-        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
-        String state = builder.create().toJson(words);
-        File file;
-        if (Files.isFileExist(fileName)) {
-            file = Files.getFile(fileName);
-        } else {
-            file = Files.createFile(fileName, Files.Dir.PROCESSED.get());
-        }
-        Writer.writeTextTo(state, file);
     }
 
     private static final String[] conditionsOfEnd = {".", "?", "!"};
