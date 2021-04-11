@@ -41,7 +41,7 @@ public class TextBuilder {
         return "state-depth-" + depth + "-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
     }
 
-    private static final TypeToken<ArrayList<Word>> STATE_TYPE = new TypeToken<>() {
+    private static final TypeToken<ArrayList<Word>> STATE_TYPE = new TypeToken<ArrayList<Word>>() {
     };
 
     private void loadSavedState(String stateName) {
