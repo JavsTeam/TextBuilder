@@ -76,6 +76,16 @@ public class TextBuilder {
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             try {
                 String word = current.getWord();
+
+                if (word.contains("@")) {
+                    text.append("\n" + word + "\n");
+                    current = findWord(current.getNextWord());
+                    if (word.length() > 2 && i > minLength) {
+                        break outer;
+                    }
+                    continue outer;
+                }
+
                 for (String condition : conditionsOfEnd) {
                     if (word.contains(condition)) {
                         text.append(word + "\n");
@@ -112,8 +122,7 @@ public class TextBuilder {
     private Word getFirstWord() {
         ArrayList<Word> capital = new ArrayList<>();
         for (Word word : words) {
-            if (word.getWord().length() > 0 &&
-                    word.getWord().charAt(0) > 'A' &&
+            if (word.getWord().charAt(0) > 'A' &&
                     word.getWord().charAt(0) < 'Я') {
                 capital.add(word);
             }
@@ -139,6 +148,7 @@ public class TextBuilder {
             previousWord = currentWord;
         }
     }
+
     private void updateWords(String previous, String current) {
         findWord(previous).addNextWord(current);
         addWord(current);
@@ -208,9 +218,6 @@ public class TextBuilder {
             for (NextWord nextWord : nextWords) {
                 total += nextWord.getCounter();
             }
-            if (total == 0) {
-                throw new UnexpectedException("NO NEXT WORD");
-            }
             // probability distribution depends on frequency of word occurrence
             int result = new Random().nextInt(total) + 1;
             // getting randomly chosen word
@@ -221,7 +228,7 @@ public class TextBuilder {
                 }
             }
             // only if something goes wrong
-            return null;
+            throw new UnexpectedException("NO NEXT WORD");
         }
 
         private String getWord() {
