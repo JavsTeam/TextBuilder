@@ -10,19 +10,22 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class TextBuilder {
-    private ArrayList<Word> words = new ArrayList<>();
+
+    private HashMap<String, Word> words = new HashMap<>();
 
     public TextBuilder(int depth, String sourceTxtPath) {
         String stateName = getStateFileName(depth, sourceTxtPath);
-        if (isSavedStateExist(stateName)) {
+       if (isSavedStateExist(stateName)) {
             loadSavedState(stateName);
         } else {
             parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
             saveStateTo(stateName);
-        }
+       }
     }
 
     public TextBuilder(int depth, File sourceTxtFile) {
@@ -41,7 +44,7 @@ public class TextBuilder {
         return "state-depth-" + depth + "-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
     }
 
-    private static final TypeToken<ArrayList<Word>> STATE_TYPE = new TypeToken<ArrayList<Word>>() {
+    private static final TypeToken<HashMap<String, Word>> STATE_TYPE = new TypeToken<HashMap<String, Word>>() {
     };
 
     private void loadSavedState(String stateName) {
@@ -71,15 +74,15 @@ public class TextBuilder {
     // TODO: refactor
     public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
-        Word current = getFirstWord();
+        String current = getFirstWord();
         outer:
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             try {
-                String word = current.getWord();
+                String word = current;
                 for (String condition : conditionsOfEnd) {
                     if (word.contains(condition)) {
                         text.append(word + "\n");
-                        current = findWord(current.getNextWord());
+                        current = findWord(words.get(current).getNextWord());
                         if (word.length() > 2 && i > minLength) {
                             break outer;
                         }
@@ -92,12 +95,12 @@ public class TextBuilder {
                             text.append("\n");
                         }
                         text.append(word + " ");
-                        current = findWord(current.getNextWord());
+                        current = findWord(words.get(current).getNextWord());
                         continue outer;
                     }
                 }
                 text.append(word + " ");
-                current = findWord(current.getNextWord());
+                current = findWord(words.get(current).getNextWord());
             } catch (UnexpectedException e) {
                 return text.toString();
             }
@@ -109,13 +112,13 @@ public class TextBuilder {
         System.out.println(getText(minLength));
     }
 
-    private Word getFirstWord() {
-        ArrayList<Word> capital = new ArrayList<>();
-        for (Word word : words) {
-            if (word.getWord().length() > 0 &&
-                    word.getWord().charAt(0) > 'A' &&
-                    word.getWord().charAt(0) < 'Я') {
-                capital.add(word);
+    private String getFirstWord() {
+        ArrayList<String> capital = new ArrayList<>();
+        for (Map.Entry<String, Word> word : words.entrySet()) {
+            if (word.getKey().length() > 0 &&
+                    word.getKey().charAt(0) > 'A' &&
+                    word.getKey().charAt(0) < 'Я') {
+                capital.add(word.getKey());
             }
         }
         return capital.get(new Random().nextInt(capital.size()));
@@ -139,64 +142,56 @@ public class TextBuilder {
             previousWord = currentWord;
         }
     }
+
     private void updateWords(String previous, String current) {
-        findWord(previous).addNextWord(current);
+        words.get(findWord(previous)).addNextWord(current);
         addWord(current);
     }
 
     // returns link to word in the list
-    private Word findWord(String word) {
-        for (Word w : words) {
-            // word already exists
-            if (w.getWord().equals(word)) {
-                return w;
-            }
+    private String findWord(String word) {
+        if (words.containsKey(word)) {return word;}
+        else {
+            // word not found
+            Word newWord = new Word();
+            words.put(word, newWord);
+            return word;
         }
-        // word not found
-        Word newWord = new Word(word);
-        words.add(newWord);
-        return newWord;
     }
 
     private void addWord(String word) {
-        for (Word w : words) {
-            // word already exists
-            if (w.getWord().equals(word)) {
-                return;
-            }
+        if (!words.containsKey(word)) {
+            // word not found
+            Word newWord = new Word();
+            words.put(word,newWord);
         }
-        // word not found
-        Word newWord = new Word(word);
-        words.add(newWord);
     }
 
     @Override
     public String toString() {
         return "TextGenerator{" +
-                "words=" + words +
+                "words=" + words.toString() +
                 '}';
     }
 
     private static class Word {
-        private final String word;
-        private final ArrayList<NextWord> nextWords = new ArrayList<>();
 
-        private Word(String word) {
-            this.word = word;
+        private final HashMap<String,Integer> nextWords = new HashMap<>();
+
+        private Word(){}
+
+        public String toString() {
+            return "next words=" + nextWords.toString() + '}';
         }
 
         private void addNextWord(String word) {
-            for (NextWord nextWord : nextWords) {
-                // word already exists
-                if (nextWord.getNextWord().equals(word)) {
-                    nextWord.incrementCounter();
-                    return;
-                }
-            }
+           if (nextWords.containsKey(word))
+           {
+               Integer i = nextWords.get(word);
+               nextWords.put(word,i+1);
+           }
             // word not found
-            NextWord newNextWord = new NextWord(word);
-            newNextWord.incrementCounter();
-            nextWords.add(newNextWord);
+            nextWords.put(word,1);
         }
 
         // TODO:
@@ -205,64 +200,23 @@ public class TextBuilder {
         private String getNextWord() throws UnexpectedException {
             int total = 0;
             // counting total weight
-            for (NextWord nextWord : nextWords) {
-                total += nextWord.getCounter();
-            }
-            if (total == 0) {
-                throw new UnexpectedException("NO NEXT WORD");
-            }
+            if (!nextWords.isEmpty()){
+                for (Map.Entry<String,Integer> nextWord : nextWords.entrySet()) {
+                 total += nextWord.getValue();
+                 }
+            } else throw new UnexpectedException("NO NEXT WORD");
             // probability distribution depends on frequency of word occurrence
             int result = new Random().nextInt(total) + 1;
             // getting randomly chosen word
-            for (NextWord nextWord : nextWords) {
-                result -= nextWord.getCounter();
+            for (Map.Entry<String,Integer> nextWord : nextWords.entrySet()) {
+                result -= nextWord.getValue();
                 if (result <= 0) {
-                    return nextWord.getNextWord();
+                    return nextWord.getKey();
                 }
             }
             // only if something goes wrong
             return null;
         }
 
-        private String getWord() {
-            return word;
-        }
-
-        @Override
-        public String toString() {
-            return "\nWord{" +
-                    "word='" + word + '\'' +
-                    ", nextWords=" + nextWords +
-                    '}';
-        }
-
-        private static class NextWord {
-            private final String nextWord;
-            private int counter;
-
-            private NextWord(String nextWord) {
-                this.nextWord = nextWord;
-            }
-
-            private void incrementCounter() {
-                counter++;
-            }
-
-            private String getNextWord() {
-                return nextWord;
-            }
-
-            private int getCounter() {
-                return counter;
-            }
-
-            @Override
-            public String toString() {
-                return "\n\tNextWord{" +
-                        "nextWord='" + nextWord + '\'' +
-                        ", counter=" + counter +
-                        '}';
-            }
-        }
     }
 }
