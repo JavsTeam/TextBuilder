@@ -15,9 +15,9 @@ public class XslxParser {
             for (Row row : book.getSheetAt(0)) {
                 if(row.getCell(0) != null) {
                     if (row.getCell(0).getCellType() == CellType.STRING){
-                        text.append(row.getCell(0).getStringCellValue() + "\n");
+                        text.append(row.getCell(0).getStringCellValue()).append("\n");
                     } else if (row.getCell(0).getCellType() == CellType.NUMERIC) {
-                        text.append(row.getCell(0).getNumericCellValue() + "\n");
+                        text.append(row.getCell(0).getNumericCellValue()).append("\n");
                     }
                 } else {
                     break;

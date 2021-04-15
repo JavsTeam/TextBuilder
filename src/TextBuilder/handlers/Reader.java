@@ -13,7 +13,7 @@ public class Reader {
             while ((line = buf.readLine()) != null) {
                 String[] words = line.split(" ");
                 for (String word : words) {
-                    text.append(word + " ");
+                    text.append(word).append(" ");
                 }
                 text.append("\n");
             }

@@ -47,17 +47,17 @@ public class TextBuilder {
                 String word = current.getWord();
 
                 if (word.contains("@")) {
-                    text.append("\n" + word + "\n");
+                    text.append("\n").append(word).append("\n");
                     current = findWord(current.getNextWord());
                     if (word.length() > 2 && i > minLength) {
-                        break outer;
+                        break;
                     }
-                    continue outer;
+                    continue;
                 }
 
                 for (String condition : conditionsOfEnd) {
                     if (word.contains(condition)) {
-                        text.append(word + "\n");
+                        text.append(word).append("\n");
                         current = findWord(current.getNextWord());
                         if (word.length() > 2 && i > minLength) {
                             break outer;
@@ -70,12 +70,12 @@ public class TextBuilder {
                         if (text.toString().lastIndexOf("\n") != text.toString().length() - 1) {
                             text.append("\n");
                         }
-                        text.append(word + " ");
+                        text.append(word).append(" ");
                         current = findWord(current.getNextWord());
                         continue outer;
                     }
                 }
-                text.append(word + " ");
+                text.append(word).append(" ");
                 current = findWord(current.getNextWord());
             } catch (UnexpectedException e) {
                 return text.toString();
@@ -103,14 +103,14 @@ public class TextBuilder {
         String[] textWords = text.split(" ");
         StringBuilder previousWord = new StringBuilder(textWords[0]);
         for (int i = 1; i < depth; i++) {
-            previousWord.append(" " + textWords[i]);
+            previousWord.append(" ").append(textWords[i]);
         }
 
         addWord(previousWord.toString());
         for (int i = depth; i < textWords.length; i++) {
             StringBuilder currentWord = new StringBuilder(textWords[i]);
             for (int j = 1; j < depth; j++) {
-                currentWord.append(" " + textWords[++i]);
+                currentWord.append(" ").append(textWords[++i]);
             }
 
             updateWords(previousWord.toString(), currentWord.toString());

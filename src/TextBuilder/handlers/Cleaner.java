@@ -35,7 +35,7 @@ public class Cleaner {
                     continue outer;
                 }
             }
-            result.append(word + " ");
+            result.append(word).append(" ");
         }
 
         return result.toString();
