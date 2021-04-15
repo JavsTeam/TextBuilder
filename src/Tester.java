@@ -8,8 +8,9 @@ public class Tester {
     public static final  File BUGURTS = Files.getFile("bugurts.txt");
 
     public static void main(String[] args) {
-       TextBuilder textBuilder = new TextBuilder(1, JUMORESKI);
+       TextBuilder textBuilder = new TextBuilder(4, JUMORESKI).invalidateCache();
        textBuilder.printText(10);
+
+
     }
 }
-//a

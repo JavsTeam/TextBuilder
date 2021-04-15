@@ -8,13 +8,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class State {
-    private final int depth;
-    private final String sourceTxtPath;
     private final String stateName;
 
     public State(int depth, String sourceTxtPath) {
-        this.depth = depth;
-        this.sourceTxtPath = sourceTxtPath;
         stateName = createStateFileName(depth, sourceTxtPath);
     }
 
@@ -33,13 +29,21 @@ public class State {
     public void save(ArrayList<?> state) {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         String stateString = builder.create().toJson(state);
+        Writer.writeTextTo(stateString, getStateFile());
+    }
+
+    public void invalidate() {
+        getStateFile().delete();
+    }
+
+    private File getStateFile() {
         File file;
         if (Files.isFileExist(stateName)) {
             file = Files.getFile(stateName);
         } else {
             file = Files.createFile(stateName, Files.Dir.PROCESSED.get());
         }
-        Writer.writeTextTo(stateString, file);
+        return file;
     }
 
     private String createStateFileName(int depth, String sourceTxtPath) {

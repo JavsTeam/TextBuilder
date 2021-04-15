@@ -11,15 +11,17 @@ import java.util.Random;
 
 public class TextBuilder {
     private ArrayList<Word> words = new ArrayList<>();
+    private final State state;
 
     public TextBuilder(int depth, String sourceTxtPath) {
-        State state = new State(depth, sourceTxtPath);
+        state = new State(depth, sourceTxtPath);
         if (state.isExist()) {
             // Do not delete type argument
-            words = state.get(new TypeToken<ArrayList<Word>>() {});
+            words = state.get(new TypeToken<ArrayList<Word>>() {
+            });
         } else {
             parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
-            state.save(words);
+            saveState();
         }
     }
 
@@ -105,14 +107,13 @@ public class TextBuilder {
         for (int i = 1; i < depth; i++) {
             previousWord.append(" ").append(textWords[i]);
         }
-
         addWord(previousWord.toString());
-        for (int i = depth; i < textWords.length; i++) {
+
+        for (int i = depth; i < textWords.length - depth; i++) {
             StringBuilder currentWord = new StringBuilder(textWords[i]);
             for (int j = 1; j < depth; j++) {
                 currentWord.append(" ").append(textWords[++i]);
             }
-
             updateWords(previousWord.toString(), currentWord.toString());
             previousWord = currentWord;
         }
@@ -147,6 +148,23 @@ public class TextBuilder {
         // word not found
         Word newWord = new Word(word);
         words.add(newWord);
+    }
+
+    private void saveState() {
+        state.save(words);
+    }
+
+    /**
+     * Call this method if changes have been made to the file we are currently working with,
+     * but its name has not changed, so the {@link TextBuilder.handlers.State} handler
+     * will not notice the difference
+     * and will not update the state file.
+     * @return an instance of itself so that it can be used after a constructor or any other method
+     */
+    public TextBuilder invalidateCache() {
+        state.invalidate();
+        saveState();
+        return this;
     }
 
     @Override
