@@ -20,12 +20,12 @@ public class TextBuilder {
 
     public TextBuilder(int depth, String sourceTxtPath) {
         String stateName = getStateFileName(depth, sourceTxtPath);
-       if (isSavedStateExist(stateName)) {
+        if (isSavedStateExist(stateName)) {
             loadSavedState(stateName);
         } else {
             parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
             saveStateTo(stateName);
-       }
+        }
     }
 
     public TextBuilder(int depth, File sourceTxtFile) {
@@ -150,8 +150,9 @@ public class TextBuilder {
 
     // returns link to word in the list
     private String findWord(String word) {
-        if (words.containsKey(word)) {return word;}
-        else {
+        if (words.containsKey(word)) {
+            return word;
+        } else {
             // word not found
             Word newWord = new Word();
             words.put(word, newWord);
@@ -163,7 +164,7 @@ public class TextBuilder {
         if (!words.containsKey(word)) {
             // word not found
             Word newWord = new Word();
-            words.put(word,newWord);
+            words.put(word, newWord);
         }
     }
 
@@ -176,22 +177,22 @@ public class TextBuilder {
 
     private static class Word {
 
-        private final HashMap<String,Integer> nextWords = new HashMap<>();
+        private final HashMap<String, Integer> nextWords = new HashMap<>();
 
-        private Word(){}
+        private Word() {
+        }
 
         public String toString() {
             return "next words=" + nextWords.toString() + '}';
         }
 
         private void addNextWord(String word) {
-           if (nextWords.containsKey(word))
-           {
-               Integer i = nextWords.get(word);
-               nextWords.put(word,i+1);
-           }
+            if (nextWords.containsKey(word)) {
+                Integer i = nextWords.get(word);
+                nextWords.put(word, i + 1);
+            }
             // word not found
-            nextWords.put(word,1);
+            nextWords.put(word, 1);
         }
 
         // TODO:
@@ -200,15 +201,15 @@ public class TextBuilder {
         private String getNextWord() throws UnexpectedException {
             int total = 0;
             // counting total weight
-            if (!nextWords.isEmpty()){
-                for (Map.Entry<String,Integer> nextWord : nextWords.entrySet()) {
-                 total += nextWord.getValue();
-                 }
+            if (!nextWords.isEmpty()) {
+                for (Map.Entry<String, Integer> nextWord : nextWords.entrySet()) {
+                    total += nextWord.getValue();
+                }
             } else throw new UnexpectedException("NO NEXT WORD");
             // probability distribution depends on frequency of word occurrence
             int result = new Random().nextInt(total) + 1;
             // getting randomly chosen word
-            for (Map.Entry<String,Integer> nextWord : nextWords.entrySet()) {
+            for (Map.Entry<String, Integer> nextWord : nextWords.entrySet()) {
                 result -= nextWord.getValue();
                 if (result <= 0) {
                     return nextWord.getKey();
