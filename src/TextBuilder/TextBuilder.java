@@ -1,23 +1,31 @@
 package TextBuilder;
 
+import TextBuilder.handlers.Files;
 import TextBuilder.handlers.Reader;
 import TextBuilder.handlers.State;
+import TextBuilder.handlers.Writer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class TextBuilder {
-    private ArrayList<Word> words = new ArrayList<>();
+
     private final State state;
+
+    private HashMap<String, Word> words = new HashMap<>();
 
     public TextBuilder(int depth, String sourceTxtPath) {
         state = new State(depth, sourceTxtPath);
         if (state.isExist()) {
             // Do not delete type argument
-            words = state.get(new TypeToken<ArrayList<Word>>() {
+            words = state.get(new TypeToken<HashMap<String, Word>>() {
             });
         } else {
             parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
@@ -37,30 +45,49 @@ public class TextBuilder {
         this(1, sourceTxtFile);
     }
 
+    private String getStateFileName(int depth, String sourcePath) {
+        return "state-depth-" + depth + "-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
+    }
+
+    private static final TypeToken<HashMap<String, Word>> STATE_TYPE = new TypeToken<HashMap<String, Word>>() {
+    };
+
+    private void loadSavedState(String stateName) {
+        String state = Reader.readTxt(Files.getFile(stateName));
+        words = new Gson().fromJson(state, STATE_TYPE.getType());
+    }
+
+    private boolean isSavedStateExist(String fileName) {
+        return Files.isFileExist(fileName);
+    }
+
+    private void saveStateTo(String fileName) {
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        String state = builder.create().toJson(words);
+        File file;
+        if (Files.isFileExist(fileName)) {
+            file = Files.getFile(fileName);
+        } else {
+            file = Files.createFile(fileName, Files.Dir.PROCESSED.get());
+        }
+        Writer.writeTextTo(state, file);
+    }
+
     private static final String[] conditionsOfEnd = {".", "?", "!"};
     private static final String[] conditionsOfNext = {"一", "—", "-"};
 
     public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
-        Word current = getFirstWord();
+        String current = getFirstWord();
         outer:
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             try {
-                String word = current.getWord();
 
-                if (word.contains("@")) {
-                    text.append("\n").append(word).append("\n");
-                    current = findWord(current.getNextWord());
-                    if (word.length() > 2 && i > minLength) {
-                        break;
-                    }
-                    continue;
-                }
-
+                String word = current;
                 for (String condition : conditionsOfEnd) {
                     if (word.contains(condition)) {
-                        text.append(word).append("\n");
-                        current = findWord(current.getNextWord());
+                        text.append(word + "\n");
+                        current = findWord(words.get(current).getNextWord());
                         if (word.length() > 2 && i > minLength) {
                             break outer;
                         }
@@ -72,13 +99,14 @@ public class TextBuilder {
                         if (text.toString().lastIndexOf("\n") != text.toString().length() - 1) {
                             text.append("\n");
                         }
-                        text.append(word).append(" ");
-                        current = findWord(current.getNextWord());
+
+                        text.append(word + " ");
+                        current = findWord(words.get(current).getNextWord());
                         continue outer;
                     }
                 }
-                text.append(word).append(" ");
-                current = findWord(current.getNextWord());
+                text.append(word + " ");
+                current = findWord(words.get(current).getNextWord());
             } catch (UnexpectedException e) {
                 return text.toString();
             }
@@ -90,12 +118,13 @@ public class TextBuilder {
         System.out.println(getText(minLength));
     }
 
-    private Word getFirstWord() {
-        ArrayList<Word> capital = new ArrayList<>();
-        for (Word word : words) {
-            if (word.getWord().charAt(0) > 'A' &&
-                    word.getWord().charAt(0) < 'Я') {
-                capital.add(word);
+    private String getFirstWord() {
+        ArrayList<String> capital = new ArrayList<>();
+        for (Map.Entry<String, Word> word : words.entrySet()) {
+            if (word.getKey().length() > 0 &&
+                    word.getKey().charAt(0) > 'A' &&
+                    word.getKey().charAt(0) < 'Я') {
+                capital.add(word.getKey());
             }
         }
         return capital.get(new Random().nextInt(capital.size()));
@@ -120,34 +149,28 @@ public class TextBuilder {
     }
 
     private void updateWords(String previous, String current) {
-        findWord(previous).addNextWord(current);
+        words.get(findWord(previous)).addNextWord(current);
         addWord(current);
     }
 
     // returns link to word in the list
-    private Word findWord(String word) {
-        for (Word w : words) {
-            // word already exists
-            if (w.getWord().equals(word)) {
-                return w;
-            }
+    private String findWord(String word) {
+        if (words.containsKey(word)) {
+            return word;
+        } else {
+            // word not found
+            Word newWord = new Word();
+            words.put(word, newWord);
+            return word;
         }
-        // word not found
-        Word newWord = new Word(word);
-        words.add(newWord);
-        return newWord;
     }
 
     private void addWord(String word) {
-        for (Word w : words) {
-            // word already exists
-            if (w.getWord().equals(word)) {
-                return;
-            }
+        if (!words.containsKey(word)) {
+            // word not found
+            Word newWord = new Word();
+            words.put(word, newWord);
         }
-        // word not found
-        Word newWord = new Word(word);
-        words.add(newWord);
     }
 
     private void saveState() {
@@ -159,6 +182,7 @@ public class TextBuilder {
      * but its name has not changed, so the {@link TextBuilder.handlers.State} handler
      * will not notice the difference
      * and will not update the state file.
+     *
      * @return an instance of itself so that it can be used after a constructor or any other method
      */
     public TextBuilder invalidateCache() {
@@ -170,90 +194,49 @@ public class TextBuilder {
     @Override
     public String toString() {
         return "TextGenerator{" +
-                "words=" + words +
+                "words=" + words.toString() +
                 '}';
     }
 
     private static class Word {
-        private final String word;
-        private final ArrayList<NextWord> nextWords = new ArrayList<>();
 
-        private Word(String word) {
-            this.word = word;
+        private final HashMap<String, Integer> nextWords = new HashMap<>();
+
+        private Word() {
+        }
+
+        public String toString() {
+            return "next words=" + nextWords.toString() + '}';
         }
 
         private void addNextWord(String word) {
-            for (NextWord nextWord : nextWords) {
-                // word already exists
-                if (nextWord.getNextWord().equals(word)) {
-                    nextWord.incrementCounter();
-                    return;
-                }
+            if (nextWords.containsKey(word)) {
+                Integer i = nextWords.get(word);
+                nextWords.put(word, i + 1);
             }
             // word not found
-            NextWord newNextWord = new NextWord(word);
-            newNextWord.incrementCounter();
-            nextWords.add(newNextWord);
+            nextWords.put(word, 1);
         }
 
         private String getNextWord() throws UnexpectedException {
             int total = 0;
             // counting total weight
-            for (NextWord nextWord : nextWords) {
-                total += nextWord.getCounter();
-            }
+            if (!nextWords.isEmpty()) {
+                for (Map.Entry<String, Integer> nextWord : nextWords.entrySet()) {
+                    total += nextWord.getValue();
+                }
+            } else throw new UnexpectedException("NO NEXT WORD");
             // probability distribution depends on frequency of word occurrence
             int result = new Random().nextInt(total) + 1;
             // getting randomly chosen word
-            for (NextWord nextWord : nextWords) {
-                result -= nextWord.getCounter();
+            for (Map.Entry<String, Integer> nextWord : nextWords.entrySet()) {
+                result -= nextWord.getValue();
                 if (result <= 0) {
-                    return nextWord.getNextWord();
+                    return nextWord.getKey();
                 }
             }
             // only if something goes wrong
             throw new UnexpectedException("NO NEXT WORD");
-        }
-
-        private String getWord() {
-            return word;
-        }
-
-        @Override
-        public String toString() {
-            return "\nWord{" +
-                    "word='" + word + '\'' +
-                    ", nextWords=" + nextWords +
-                    '}';
-        }
-
-        private static class NextWord {
-            private final String nextWord;
-            private int counter;
-
-            private NextWord(String nextWord) {
-                this.nextWord = nextWord;
-            }
-
-            private void incrementCounter() {
-                counter++;
-            }
-
-            private String getNextWord() {
-                return nextWord;
-            }
-
-            private int getCounter() {
-                return counter;
-            }
-
-            @Override
-            public String toString() {
-                return "\n\tNextWord{" +
-                        "nextWord='" + nextWord + '\'' +
-                        ", counter=" + counter +
-                        '}';
-            }
         }
     }
 }

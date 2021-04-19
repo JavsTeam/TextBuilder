@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class State {
     private final String stateName;
@@ -18,7 +18,7 @@ public class State {
         return Files.isFileExist(stateName);
     }
 
-    public <T> ArrayList<T> get(TypeToken<ArrayList<T>> containerToken) {
+    public <T> HashMap<String,T> get(TypeToken<HashMap<String,T>> containerToken) {
         if (isExist()) {
             String state = Reader.readTxt(Files.getFile(stateName));
             return new Gson().fromJson(state, containerToken.getType());
@@ -26,7 +26,7 @@ public class State {
         throw new IllegalStateException("Saved state does not exist");
     }
 
-    public void save(ArrayList<?> state) {
+    public void save(HashMap<String, ?> state) {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         String stateString = builder.create().toJson(state);
         Writer.writeTextTo(stateString, getStateFile());
