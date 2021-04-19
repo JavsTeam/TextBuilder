@@ -1,11 +1,7 @@
 package TextBuilder;
 
-import TextBuilder.handlers.Files;
 import TextBuilder.handlers.Reader;
 import TextBuilder.handlers.State;
-import TextBuilder.handlers.Writer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -45,34 +41,6 @@ public class TextBuilder {
         this(1, sourceTxtFile);
     }
 
-    private String getStateFileName(int depth, String sourcePath) {
-        return "state-depth-" + depth + "-" + sourcePath.substring(sourcePath.lastIndexOf('\\') + 1);
-    }
-
-    private static final TypeToken<HashMap<String, Word>> STATE_TYPE = new TypeToken<HashMap<String, Word>>() {
-    };
-
-    private void loadSavedState(String stateName) {
-        String state = Reader.readTxt(Files.getFile(stateName));
-        words = new Gson().fromJson(state, STATE_TYPE.getType());
-    }
-
-    private boolean isSavedStateExist(String fileName) {
-        return Files.isFileExist(fileName);
-    }
-
-    private void saveStateTo(String fileName) {
-        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
-        String state = builder.create().toJson(words);
-        File file;
-        if (Files.isFileExist(fileName)) {
-            file = Files.getFile(fileName);
-        } else {
-            file = Files.createFile(fileName, Files.Dir.PROCESSED.get());
-        }
-        Writer.writeTextTo(state, file);
-    }
-
     private static final String[] conditionsOfEnd = {".", "?", "!"};
     private static final String[] conditionsOfNext = {"一", "—", "-"};
 
@@ -86,7 +54,7 @@ public class TextBuilder {
                 String word = current;
                 for (String condition : conditionsOfEnd) {
                     if (word.contains(condition)) {
-                        text.append(word + "\n");
+                        text.append(word).append("\n");
                         current = findWord(words.get(current).getNextWord());
                         if (word.length() > 2 && i > minLength) {
                             break outer;
@@ -100,12 +68,12 @@ public class TextBuilder {
                             text.append("\n");
                         }
 
-                        text.append(word + " ");
+                        text.append(word).append(" ");
                         current = findWord(words.get(current).getNextWord());
                         continue outer;
                     }
                 }
-                text.append(word + " ");
+                text.append(word).append(" ");
                 current = findWord(words.get(current).getNextWord());
             } catch (UnexpectedException e) {
                 return text.toString();
@@ -155,14 +123,12 @@ public class TextBuilder {
 
     // returns link to word in the list
     private String findWord(String word) {
-        if (words.containsKey(word)) {
-            return word;
-        } else {
+        if (!words.containsKey(word)) {
             // word not found
             Word newWord = new Word();
             words.put(word, newWord);
-            return word;
         }
+        return word;
     }
 
     private void addWord(String word) {

@@ -11,8 +11,7 @@ public class Files {
      * Else creates a file with that name in the files/ directory by default
      * and then returns its object representation.
      *
-     * @param fileName
-     *        Full file name including its extension
+     * @param fileName Full file name including its extension
      * @return {@link File} representation of the file with the given name
      */
     public static File getFile(String fileName) {
@@ -28,17 +27,13 @@ public class Files {
     /**
      * Creates a file with given name in a given directory.
      *
-     * @param fileName
-     *        Full file name including its extension
-     * @param pathToDirectory
-     *        Path to directory where to create a new file
+     * @param fileName        Full file name including its extension
+     * @param pathToDirectory Path to directory where to create a new file
      * @return Object representation of created file or if file was not created returns <code>null</code>
-     * @throws IOException
-     *         If {@code pathToDirectory} is invalid.
-     *         Exception is being caught in the method. If so, method returns <code>null</code>
-     * @throws FileSystemException
-     *         If {@code fileName} is invalid or clashes wit an existing file's name in a directory.
-     *         Exception is being caught in the method. If so, method returns <code>null</code>
+     * @throws IOException         If {@code pathToDirectory} is invalid.
+     *                             Exception is being caught in the method. If so, method returns <code>null</code>
+     * @throws FileSystemException If {@code fileName} is invalid or clashes wit an existing file's name in a directory.
+     *                             Exception is being caught in the method. If so, method returns <code>null</code>
      */
     public static File createFile(String fileName, String pathToDirectory) {
         File newFile = new File(pathToDirectory + "/" + fileName);
@@ -54,17 +49,13 @@ public class Files {
     /**
      * Creates a file with given name in a directory given as object.
      *
-     * @param fileName
-     *        Full file name including its extension
-     * @param directory
-     *        Object representation of directory where to create a new file
+     * @param fileName  Full file name including its extension
+     * @param directory Object representation of directory where to create a new file
      * @return Object representation of created file or if file was not created returns <code>null</code>
-     * @throws IOException
-     *         If {@code pathToDirectory} is invalid.
-     *         Exception is being caught in the method. If so, method returns <code>null</code>
-     * @throws FileSystemException
-     *         If {@code fileName} is invalid or clashes wit an existing file's name in a directory.
-     *         Exception is being caught in the method. If so, method returns <code>null</code>
+     * @throws IOException         If {@code pathToDirectory} is invalid.
+     *                             Exception is being caught in the method. If so, method returns <code>null</code>
+     * @throws FileSystemException If {@code fileName} is invalid or clashes wit an existing file's name in a directory.
+     *                             Exception is being caught in the method. If so, method returns <code>null</code>
      */
     public static File createFile(String fileName, File directory) {
         return createFile(fileName, directory.getPath());
@@ -73,12 +64,10 @@ public class Files {
     /**
      * Creates a file with given name in a files/ directory by default.
      *
-     * @param fileName
-     *        Full file name including its extension
+     * @param fileName Full file name including its extension
      * @return Object representation of created file or if file was not created returns <code>null</code>
-     * @throws FileSystemException
-     *         If {@code fileName} is invalid or clashes wit an existing file's name in a directory.
-     *         Exception is being caught in the method. If so, method returns <code>null</code>
+     * @throws FileSystemException If {@code fileName} is invalid or clashes wit an existing file's name in a directory.
+     *                             Exception is being caught in the method. If so, method returns <code>null</code>
      */
     public static File createFile(String fileName) {
         return createFile(fileName, Dir.FILES.get().getPath());
