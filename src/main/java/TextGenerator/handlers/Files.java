@@ -1,15 +1,17 @@
 package TextGenerator.handlers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import lombok.extern.java.Log;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
+import java.util.Objects;
 
+@Log
 public class Files {
-    private static final Logger logger =  LogManager.getLogger(Files.class);
+
     public static File getFile(String fileName) {
         File file;
         return (file = recursiveFileSearch(Dir.SRC.get(), fileName)) != null ?
@@ -23,13 +25,13 @@ public class Files {
     public static File createFile(String fileName, String pathToDirectory) {
         File newFile = new File(pathToDirectory + "/" + fileName);
         try {
-            logger.trace("Trying to createFile...");
+            log.info("Trying to createFile...");
             if (newFile.createNewFile()) return newFile;
             throw new FileSystemException("Unacceptable file name: " + fileName);
         } catch (IOException e) {
-            logger.error(e.getMessage()  + "\nError happened while trying to createFile!");
+            log.warning(e.getMessage()  + "\nError happened while trying to createFile!");
         }
-        logger.info("null returned in createFile. Seems abnormal");
+        log.info("null returned in createFile. Seems abnormal");
         return null;
     }
 
@@ -69,19 +71,19 @@ public class Files {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("null returned in createDirectory. Seems abnormal");
+        log.info("null returned in createDirectory. Seems abnormal");
         return null;
     }
 
     private static File recursiveFileSearch(File current, String fileName) {
         if (current.isDirectory()) {
-            for (File content : current.listFiles()) {
+            for (File content : Objects.requireNonNull(current.listFiles())) {
                 File result = recursiveFileSearch(content, fileName);
                 if (result != null) {
                     return result;
                 }
             }
-            logger.info("null returned in recursiveFileSearch. Cautious");
+            log.info("null returned in recursiveFileSearch. Cautious");
             return null;
         } else {
             return current.getName().equals(fileName) ? current : null;
@@ -94,14 +96,14 @@ public class Files {
             if (current.getName().equals(dirName)) {
                 return current;
             }
-            for (File content : current.listFiles()) {
+            for (File content : Objects.requireNonNull(current.listFiles())) {
                 File result = recursiveDirSearch(content, dirName);
                 if (result != null) {
                     return result;
                 }
             }
         }
-        logger.info("null returned in recursiveDirSearch. Cautious");
+        log.info("null returned in recursiveDirSearch. Cautious");
         return null;
     }
 
