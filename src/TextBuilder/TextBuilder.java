@@ -164,24 +164,30 @@ public class TextBuilder {
                 '}';
     }
 
+
     private static class Word {
-
         private final HashMap<String, Integer> nextWords = new HashMap<>();
-
-        private Word() {
-        }
+        private boolean canBeLast;
+        private final HashMap<String, Integer> followingMarks = new HashMap<>(); // ? ! . ... , ) space
 
         public String toString() {
             return "next words=" + nextWords.toString() + '}';
         }
 
         private void addNextWord(String word) {
-            if (nextWords.containsKey(word)) {
-                Integer i = nextWords.get(word);
-                nextWords.put(word, i + 1);
+            addToHashMap(nextWords, word);
+        }
+
+        private void addMark(String mark) {
+            addToHashMap(followingMarks, mark);
+        }
+
+        private static <T> void addToHashMap(HashMap<T, Integer> map, T item) {
+            if (map.containsKey(item)) {
+                map.put(item, map.get(item) + 1);
             }
-            // word not found
-            nextWords.put(word, 1);
+            // item not found
+            map.put(item, 1);
         }
 
         private String getNextWord() throws UnexpectedException {
@@ -203,6 +209,29 @@ public class TextBuilder {
             }
             // only if something goes wrong
             throw new UnexpectedException("NO NEXT WORD");
+        }
+
+        private static class NextWord {
+            private int counter = 1;
+            private boolean canBeFirst;
+            private HashMap<String, Integer> previousMarks = new HashMap<>(); // ? ! . ... space
+
+            private boolean canBeFirst() {
+                return canBeFirst;
+            }
+
+            private HashMap<String, Integer> getCompatibleMarks(HashMap<String, Integer> followingAfterPrevious) {
+                HashMap<String, Integer> compatible = new HashMap<>();
+                for (String mark : previousMarks.keySet()) {
+                    if (followingAfterPrevious.containsKey(mark))
+                        compatible.put(mark, followingAfterPrevious.get(mark));
+                }
+                return compatible;
+            }
+
+            private void increment() {
+                counter++;
+            }
         }
     }
 }
