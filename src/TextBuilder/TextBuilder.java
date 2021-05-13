@@ -41,45 +41,33 @@ public class TextBuilder {
         this(1, sourceTxtFile);
     }
 
-    private static final String[] conditionsOfEnd = {".", "?", "!"};
-    private static final String[] conditionsOfNext = {"一", "—", "-"};
-
     public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
-        String current = getFirstWord();
-        outer:
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            try {
+        String word = getFirstWord();
+        int counter = 0;
 
-                String word = current;
-                for (String condition : conditionsOfEnd) {
-                    if (word.contains(condition)) {
-                        text.append(word).append("\n");
-                        current = findWord(words.get(current).getNextWord());
-                        if (word.length() > 2 && i > minLength) {
-                            break outer;
-                        }
-                        continue outer;
-                    }
-                }
-                for (String condition : conditionsOfNext) {
-                    if (word.contains(condition)) {
-                        if (text.toString().lastIndexOf("\n") != text.toString().length() - 1) {
-                            text.append("\n");
-                        }
-
-                        text.append(word).append(" ");
-                        current = findWord(words.get(current).getNextWord());
-                        continue outer;
-                    }
-                }
-                text.append(word).append(" ");
-                current = findWord(words.get(current).getNextWord());
-            } catch (UnexpectedException e) {
-                return text.toString();
+        while(true) {
+            if (counter++ > minLength && isEnding(word)) {
+                text.append(word);
+                break;
             }
+            text.append(word).append(" ");
+            word = findWord(words.get(word).getNextWord());
         }
         return text.toString();
+    }
+
+    private static final String[] endMarks = {".", "?", "!", "...", ")"};
+
+    private boolean isEnding(String word) {
+        if(word.length() > 1) {
+            for (String mark : endMarks) {
+                if (word.contains(mark)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void printText(int minLength) {
@@ -98,21 +86,39 @@ public class TextBuilder {
         return capital.get(new Random().nextInt(capital.size()));
     }
 
+
+    // TODO: Better handling of empty words
     private void parseWordsFromText(int depth, String text) {
         String[] textWords = text.split(" ");
-        StringBuilder previousWord = new StringBuilder(textWords[0]);
-        for (int i = 1; i < depth; i++) {
-            previousWord.append(" ").append(textWords[i]);
+        StringBuilder word = new StringBuilder(textWords[0]);
+        int index = 0;
+
+        for (int i = 0; i < textWords.length; i++) { // pick first word
+            if (!textWords[i].equals("")) {
+                word = new StringBuilder(textWords[i]);
+                index = i;
+                break;
+            }
         }
-        addWord(previousWord.toString());
+
+        for (int i = index + 1; i < depth; i++) {
+            if (!textWords[i].equals("")) {
+                word.append(" ").append(textWords[i]);
+            }
+        }
+
+        addWord(word.toString());
 
         for (int i = depth; i < textWords.length - depth; i++) {
+            if (textWords[i].equals("")) {
+                continue;
+            }
             StringBuilder currentWord = new StringBuilder(textWords[i]);
             for (int j = 1; j < depth; j++) {
                 currentWord.append(" ").append(textWords[++i]);
             }
-            updateWords(previousWord.toString(), currentWord.toString());
-            previousWord = currentWord;
+            updateWords(word.toString(), currentWord.toString());
+            word = currentWord;
         }
     }
 
@@ -139,10 +145,6 @@ public class TextBuilder {
         }
     }
 
-    private void saveState() {
-        state.save(words);
-    }
-
     /**
      * Call this method if changes have been made to the file we are currently working with,
      * but its name has not changed, so the {@link TextBuilder.handlers.State} handler
@@ -155,6 +157,10 @@ public class TextBuilder {
         state.invalidate();
         saveState();
         return this;
+    }
+
+    private void saveState() {
+        state.save(words);
     }
 
     @Override
@@ -184,25 +190,32 @@ public class TextBuilder {
             nextWords.put(word, 1);
         }
 
-        private String getNextWord() throws UnexpectedException {
-            int total = 0;
-            // counting total weight
-            if (!nextWords.isEmpty()) {
+
+        // TODO: Better exception handling
+        private String getNextWord() {
+            try {
+                int total = 0;
+                // counting total weight
+                if (!nextWords.isEmpty()) {
+                    for (Map.Entry<String, Integer> nextWord : nextWords.entrySet()) {
+                        total += nextWord.getValue();
+                    }
+                } else throw new UnexpectedException("NO NEXT WORD");
+                // probability distribution depends on frequency of word occurrence
+                int result = new Random().nextInt(total) + 1;
+                // getting randomly chosen word
                 for (Map.Entry<String, Integer> nextWord : nextWords.entrySet()) {
-                    total += nextWord.getValue();
+                    result -= nextWord.getValue();
+                    if (result <= 0) {
+                        return nextWord.getKey();
+                    }
                 }
-            } else throw new UnexpectedException("NO NEXT WORD");
-            // probability distribution depends on frequency of word occurrence
-            int result = new Random().nextInt(total) + 1;
-            // getting randomly chosen word
-            for (Map.Entry<String, Integer> nextWord : nextWords.entrySet()) {
-                result -= nextWord.getValue();
-                if (result <= 0) {
-                    return nextWord.getKey();
-                }
+                // only if something goes wrong
+                throw new UnexpectedException("NO NEXT WORD");
+            } catch (UnexpectedException e) {
+                e.printStackTrace();
             }
-            // only if something goes wrong
-            throw new UnexpectedException("NO NEXT WORD");
+            return null;
         }
     }
 }
