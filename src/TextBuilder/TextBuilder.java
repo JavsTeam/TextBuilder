@@ -14,10 +14,14 @@ import java.util.Random;
 public class TextBuilder {
 
     private final State state;
+    private final int depth;
+    private final String sourceTxtPath;
 
     private HashMap<String, Word> words = new HashMap<>();
 
     public TextBuilder(int depth, String sourceTxtPath) {
+        this.depth = depth;
+        this.sourceTxtPath = sourceTxtPath;
         state = new State(depth, sourceTxtPath);
         if (state.isExist()) {
             // Do not delete type argument
@@ -60,7 +64,10 @@ public class TextBuilder {
     private static final String[] endMarks = {".", "?", "!", "...", ")"};
 
     private boolean isEnding(String word) {
-        if(word.length() > 1) {
+        if(word.length() > 1 && !word.contains("@")) {
+            if(word.indexOf("\n") >= word.length() - 2) {
+                return true;
+            }
             for (String mark : endMarks) {
                 if (word.contains(mark)) {
                     return true;
@@ -90,36 +97,27 @@ public class TextBuilder {
     // TODO: Better handling of empty words
     private void parseWordsFromText(int depth, String text) {
         String[] textWords = text.split(" ");
+
         StringBuilder word = new StringBuilder(textWords[0]);
-        int index = 0;
-
-        for (int i = 0; i < textWords.length; i++) { // pick first word
-            if (!textWords[i].equals("")) {
-                word = new StringBuilder(textWords[i]);
-                index = i;
-                break;
-            }
-        }
-
-        for (int i = index + 1; i < depth; i++) {
-            if (!textWords[i].equals("")) {
-                word.append(" ").append(textWords[i]);
-            }
-        }
 
         addWord(word.toString());
 
-        for (int i = depth; i < textWords.length - depth; i++) {
-            if (textWords[i].equals("")) {
+        for (int i = 0; i < textWords.length - depth; i++) {
+            if (textWords[i].equals("") || textWords[i].equals(" ")) {
                 continue;
             }
             StringBuilder currentWord = new StringBuilder(textWords[i]);
+
             for (int j = 1; j < depth; j++) {
                 currentWord.append(" ").append(textWords[++i]);
             }
             updateWords(word.toString(), currentWord.toString());
             word = currentWord;
         }
+    }
+
+    private static String clean(String string) {
+        return string.replaceAll(" ", "");
     }
 
     private void updateWords(String previous, String current) {
@@ -155,6 +153,7 @@ public class TextBuilder {
      */
     public TextBuilder invalidateCache() {
         state.invalidate();
+        parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
         saveState();
         return this;
     }
