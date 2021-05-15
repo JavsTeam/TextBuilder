@@ -24,7 +24,7 @@ public class Cleaner {
         Writer.writeTextTo(result, pathToTxt);
     }
 
-    private static String deleteFromTextIfContains(String[] forbidden, String text) {
+    public static String deleteFromTextIfContains(String[] forbidden, String text) {
         StringBuilder result = new StringBuilder();
         String[] words = text.split(" ");
 
@@ -40,6 +40,22 @@ public class Cleaner {
 
         return result.toString();
     }
+
+    public static void placeEndl(String pathToTxt) {
+        String[] text = Reader.readTxt(pathToTxt).split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for(String s : text) {
+            if(s.equals("@")) {
+                result.append("\n").append("@").append("\n");
+            } else {
+                result.append(s).append(" ");
+            }
+        }
+
+        Writer.writeTextTo(result.toString(), pathToTxt);
+    }
+
 
     public static void deleteFromFileIfContains(String pathToTxt) {
         deleteFromFileIfContains(defaultArray, pathToTxt);
