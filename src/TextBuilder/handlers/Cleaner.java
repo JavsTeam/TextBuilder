@@ -56,6 +56,18 @@ public class Cleaner {
         Writer.writeTextTo(result.toString(), pathToTxt);
     }
 
+    public static void deleteEmptyLines(File txt) {
+        String[] text = Reader.readTxt(txt).split("\n");
+        StringBuilder result = new StringBuilder();
+
+        for(String s : text) {
+            if(!s.equals(" ")) {
+                result.append(s).append("\n");
+            }
+        }
+
+        Writer.writeTextTo(result.toString(), txt);
+    }
 
     public static void deleteFromFileIfContains(String pathToTxt) {
         deleteFromFileIfContains(defaultArray, pathToTxt);
