@@ -57,7 +57,12 @@ public class TextBuilder {
                 break;
             }
             text.append(word).append(" ");
-            word = findWord(words.get(word).getNextWord());
+            String nextWord = words.get(word).getNextWord();
+            if(nextWord != null) {
+                word = findWord(nextWord);
+            } else {
+                word = getFirstWord();
+            }
         }
         return text.toString();
     }
@@ -207,7 +212,7 @@ public class TextBuilder {
                 // only if something goes wrong
                 throw new UnexpectedException("NO NEXT WORD");
             } catch (UnexpectedException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
             return null;
         }
