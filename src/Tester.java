@@ -10,7 +10,8 @@ public class Tester {
     public static final File BUGURTS = Files.getFile("bugurts.txt");
 
     public static void main(String[] args) {
-        TextBuilder textBuilder = new TextBuilder(2, BUGURTS).invalidateCache();
+
+        TextBuilder textBuilder = new TextBuilder(2, JUMORESKI).invalidateCache();
         textBuilder.printText(10);
     }
 }
