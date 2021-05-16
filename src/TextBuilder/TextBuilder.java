@@ -48,11 +48,12 @@ public class TextBuilder {
     public String getText(int minLength) {
         StringBuilder text = new StringBuilder();
         String word = getFirstWord();
+        String endWord;
         int counter = 0;
 
         while(true) {
-            if (counter++ > minLength && isEnding(word)) {
-                text.append(word);
+            if (counter++ > minLength && (endWord = isEnding(word)) != null) {
+                text.append(endWord);
                 break;
             }
             text.append(word).append(" ");
@@ -61,23 +62,21 @@ public class TextBuilder {
         return text.toString();
     }
 
-    private static final String[] endMarks = {".", "?", "!", "...", ")"};
+    private static final String[] endMarks = {".", "?", "!", "...", ")", "@", "\n", "\""};
 
-    private boolean isEnding(String word) {
-        if(word.length() > 1 && !word.contains("@")) {
-            if(word.indexOf("\n") >= word.length() - 2) {
-                return true;
-            }
+    private String isEnding(String word) {
+        if(word.length() > 1) {
             for (String mark : endMarks) {
                 if (word.contains(mark)) {
-                    return true;
+                    return word.substring(0, word.indexOf(mark) + 1);
                 }
             }
         }
-        return false;
+        return null;
     }
 
     public void printText(int minLength) {
+        minLength /= depth;
         System.out.println(getText(minLength));
     }
 
@@ -114,10 +113,6 @@ public class TextBuilder {
             updateWords(word.toString(), currentWord.toString());
             word = currentWord;
         }
-    }
-
-    private static String clean(String string) {
-        return string.replaceAll(" ", "");
     }
 
     private void updateWords(String previous, String current) {
