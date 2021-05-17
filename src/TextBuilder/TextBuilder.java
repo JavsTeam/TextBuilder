@@ -67,7 +67,7 @@ public class TextBuilder {
         return text.toString();
     }
 
-    private static final String[] endMarks = {".", "?", "!", "...", ")", "@", "\n", "\""};
+    private static final String[] endMarks = {".", "?", "!", "...", ")", "@", "\n"};
 
     private String isEnding(String word) {
         if(word.length() > 1) {
