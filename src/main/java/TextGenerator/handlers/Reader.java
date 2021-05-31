@@ -1,17 +1,18 @@
 package TextGenerator.handlers;
 
-import lombok.extern.java.Log;
+import lombok.extern.jbosslog.JBossLog;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-@Log
+@JBossLog
 public class Reader {
 
     public static String readTxt(String pathToTxt) {
         StringBuilder text = new StringBuilder();
+
         try (BufferedReader buf = new BufferedReader(new FileReader(pathToTxt))) {
             String line;
             log.info("Trying to readTxt...");
@@ -23,9 +24,9 @@ public class Reader {
                 text.append("\n");
             }
         } catch (IOException e) {
-            log.warning(e.getMessage() + "\nError happened while trying to readTxt!");
+            log.warn(e.getMessage() + "\nError happened while trying to readTxt!");
         }
-        log.info("Successfully read!");
+        log.trace("Successfully read!");
         return text.toString();
     }
 

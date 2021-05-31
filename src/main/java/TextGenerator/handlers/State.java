@@ -3,16 +3,16 @@ package TextGenerator.handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import lombok.extern.java.Log;
+import lombok.extern.jbosslog.JBossLog;
 
 import java.io.File;
 import java.util.HashMap;
 
-@Log
+@JBossLog
 public class State {
     private final String stateName;
 
-    public State(int depth, String sourceTxtPath) {
+    public State(int depth, @SuppressWarnings("CdiInjectionPointsInspection") String sourceTxtPath) {
         stateName = createStateFileName(depth, sourceTxtPath);
     }
 

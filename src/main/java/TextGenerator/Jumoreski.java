@@ -2,7 +2,7 @@ package TextGenerator;
 
 import TextGenerator.handlers.Files;
 import io.smallrye.mutiny.Uni;
-import lombok.extern.java.Log;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -12,12 +12,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 
-@Log
+@JBossLog
 @Path("/jumoreski")
 public class Jumoreski {
     private static final File JUMORESKI = Files.getFile("jumoreski.txt");
     @Inject
-    Service service;
+    protected Service service;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -27,14 +27,14 @@ public class Jumoreski {
         if (depth > 2) {
             depth = 4;
         }
-        log.info("Current depth of jumoreski is " + depth);
-        log.info("Current length of jumoreski is " + length);
+        log.debug("Current depth of jumoreski is " + depth);
+        log.debug("Current length of jumoreski is " + length);
         return service.source(JUMORESKI, length, depth);
     }
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<String> jumoreski() {
-        log.info("No Params jumoreski");
+        log.debug("No Params jumoreski");
         return service.source(JUMORESKI, 10, 1);
     }
 }

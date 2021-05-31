@@ -1,7 +1,7 @@
 package TextGenerator.handlers;
 
 
-import lombok.extern.java.Log;
+import lombok.extern.jbosslog.JBossLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 
-@Log
+@JBossLog
 public class Files {
      static Path path = Paths.get(System.getProperty("user.dir")); // Needed for Java 11
     /**
@@ -52,7 +52,7 @@ public class Files {
             if (newFile.createNewFile()) return newFile;
             throw new FileSystemException("Unacceptable file name: " + fileName);
         } catch (IOException e) {
-            log.warning(e.getMessage()  + "\nError happened while trying to createFile!");
+            log.error(e.getMessage()  + "\nError happened while trying to createFile!");
         }
         log.info("null returned in createFile. Seems abnormal");
         return null;
@@ -114,7 +114,7 @@ public class Files {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.info("null returned in createDirectory. Seems abnormal");
+        log.warn("null returned in createDirectory. Seems abnormal");
         return null;
     }
 
@@ -131,7 +131,7 @@ public class Files {
                     return result;
                 }
             }
-            log.info("null returned in recursiveFileSearch. Cautious");
+            log.warn("null returned in recursiveFileSearch. Cautious");
             return null;
         } else {
             return current.getName().equals(fileName) ? current : null;
@@ -159,14 +159,14 @@ public class Files {
                 }
             }
         }
-        log.info("null returned in recursiveDirSearch. Cautious");
+        log.warn("null returned in recursiveDirSearch. Cautious");
         return null;
     }
 
     public enum Dir {
         //SRC(new File("META-INF.resources")), // For Compiled one
-        // SRC(new File(path.toUri())), // For Docker one
-        SRC(new File("/home/binocla/IdeaProjects/getting-started/src")),
+        SRC(new File("/deployments")), // For Docker one
+        // SRC(new File("/home/binocla/IdeaProjects/getting-started/src/main/resources/META-INF/resources")),
         // PROJECT(getDirectory("TextGenerator")),
         DATA(getDirectory("data")),
         PROCESSED(getDirectory("processed")),
