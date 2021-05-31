@@ -1,12 +1,13 @@
 package TextGenerator;
 
 import TextGenerator.handlers.Files;
+import io.smallrye.mutiny.Uni;
 import lombok.extern.java.Log;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
@@ -21,8 +22,8 @@ public class Jumoreski {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("{length}/{depth}")
-    public String jumoreski(@PathParam int length,
-                            @PathParam int depth) {
+    public Uni<String> jumoreski(@PathParam("length") int length,
+                                 @PathParam("depth") int depth) {
         if (depth > 2) {
             depth = 4;
         }
@@ -32,7 +33,7 @@ public class Jumoreski {
     }
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String jumoreski() {
+    public Uni<String> jumoreski() {
         log.info("No Params jumoreski");
         return service.source(JUMORESKI, 10, 1);
     }

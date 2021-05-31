@@ -3,6 +3,7 @@ package TextGenerator;
 import TextGenerator.handlers.Reader;
 import TextGenerator.handlers.State;
 import com.google.gson.reflect.TypeToken;
+import lombok.extern.java.Log;
 
 import java.io.File;
 import java.rmi.UnexpectedException;
@@ -11,7 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class TextBuilder {
+@Log
+public class TextBuilder extends SecurityManager {
 
     private final State state;
     private final int depth;
@@ -19,7 +21,14 @@ public class TextBuilder {
 
     private HashMap<String, Word> words = new HashMap<>();
 
-    public TextBuilder(int depth, String sourceTxtPath) {
+    @Override
+    public void checkPackageAccess(String pkg){
+        if (pkg.equals("java.lang.reflect")){
+            throw new SecurityException("Reflection is disabled!");
+        }
+    }
+
+    public TextBuilder(int depth, @SuppressWarnings("CdiInjectionPointsInspection") String sourceTxtPath) {
         this.depth = depth;
         this.sourceTxtPath = sourceTxtPath;
         state = new State(depth, sourceTxtPath);
@@ -64,6 +73,7 @@ public class TextBuilder {
                 word = getFirstWord();
             }
         }
+
         return text.toString();
     }
 

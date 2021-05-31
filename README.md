@@ -1,9 +1,13 @@
 To compile project
 -----------------
-### Just run Dockerfile :P
-Classic IP: 0.0.0.0:32769->8080/tcp
-------------
-### Local run:
-#### Run Application & localhost:8080/jumoreski (or bugurts) ?length=*custom*&depth=*custom*
-#### Default values ar 1000 & 1
+Stable Packaging: *mvn clean package*
+
+Stable Packaging without tests: *mvn clean package -DskipTests*
+
+Native Packaging: *mvn clean package -Pnative*
+
+### TODO:
+Work around with Quarkus Logging & Docker correct composition.
+Look forward to introducing Apache Kafka with Zookeeper.
+Check up new features and dig up into Reactive development
 

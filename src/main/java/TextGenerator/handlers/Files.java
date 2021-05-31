@@ -6,12 +6,14 @@ import lombok.extern.java.Log;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 
 @Log
 public class Files {
-    // static Path path = Paths.get(System.getProperty("user.dir")); // Needed for Java 11
+     static Path path = Paths.get(System.getProperty("user.dir")); // Needed for Java 11
     /**
      * Retrieves a file from the src/ directory of the project by its name.
      * If such a file is found, returns its object representation.
@@ -93,6 +95,7 @@ public class Files {
 
     public static File getDirectory(String dirName) {
         File file;
+        System.out.println(path);
         return (file = recursiveDirSearch(Dir.SRC.get(), dirName)) != null ?
                 file : createDirectory(dirName, Dir.DATA.get().getPath());
     }
@@ -137,9 +140,12 @@ public class Files {
 
 
     private static File recursiveDirSearch(File current, String dirName) {
-
         log.info(current.getName() + " " + current.isDirectory() + " " + current.isFile() + " " + current.exists());
+        System.out.println(current.getName() + " " + current.isDirectory() + " " + current.isFile() + " " + current.exists());
         log.info(Arrays.toString(current.listFiles()));
+        System.out.println(path);
+        System.out.println(Arrays.toString(new File(path.toUri()).listFiles()));
+        System.out.println(path.getParent());
 
         if (current.isDirectory()) {
              log.info("Gotcha");
@@ -158,8 +164,10 @@ public class Files {
     }
 
     public enum Dir {
+        //SRC(new File("META-INF.resources")), // For Compiled one
+        // SRC(new File(path.toUri())), // For Docker one
         SRC(new File("/home/binocla/IdeaProjects/getting-started/src")),
-        PROJECT(getDirectory("TextGenerator")),
+        // PROJECT(getDirectory("TextGenerator")),
         DATA(getDirectory("data")),
         PROCESSED(getDirectory("processed")),
         FILES(getDirectory("files"));
