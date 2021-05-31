@@ -3,7 +3,7 @@ package TextGenerator;
 import TextGenerator.handlers.Reader;
 import TextGenerator.handlers.State;
 import com.google.gson.reflect.TypeToken;
-import lombok.extern.java.Log;
+import lombok.extern.jbosslog.JBossLog;
 
 import java.io.File;
 import java.rmi.UnexpectedException;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-@Log
+@JBossLog
 public class TextBuilder extends SecurityManager {
 
     private final State state;
@@ -187,7 +187,7 @@ public class TextBuilder extends SecurityManager {
         }
 
         public String toString() {
-            return "next words=" + nextWords.toString() + '}';
+            return "next words=" + nextWords + '}';
         }
 
         private void addNextWord(String word) {

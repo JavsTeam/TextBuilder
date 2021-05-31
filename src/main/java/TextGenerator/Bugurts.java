@@ -16,10 +16,10 @@ import java.io.File;
 @JBossLog
 @Path("/bugurts")
 public class Bugurts {
-    private static final File BUGURTS = Files.getFile("bugurts.txt");
+    public static final File BUGURTS = Files.getFile("bugurts.txt");
 
     @Inject
-    Service service;
+    protected Service service;
 
     @SneakyThrows
     @GET
@@ -40,4 +40,5 @@ public class Bugurts {
         log.debug("No Params bugurts");
         return service.source(BUGURTS, 10, 1);
     }
+
 }

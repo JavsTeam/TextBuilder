@@ -1,16 +1,18 @@
 package TextGenerator.handlers;
 
+import lombok.extern.jbosslog.JBossLog;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+@JBossLog
 public class Cleaner {
     public static final String[] defaultArray = {" ", "\n", "http", "#", ":", "[", "]"};
 
     public static void deleteFromFileIfContains(String[] forbidden, String pathToTxt) {
         StringBuilder text = new StringBuilder();
-
         try (BufferedReader buf = new BufferedReader(new FileReader(pathToTxt))) {
             String line;
             while ((line = buf.readLine()) != null) {

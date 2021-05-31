@@ -9,10 +9,8 @@ import java.io.IOException;
 
 @JBossLog
 public class Reader {
-
     public static String readTxt(String pathToTxt) {
         StringBuilder text = new StringBuilder();
-
         try (BufferedReader buf = new BufferedReader(new FileReader(pathToTxt))) {
             String line;
             log.info("Trying to readTxt...");

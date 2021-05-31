@@ -15,7 +15,7 @@ import java.io.File;
 @JBossLog
 @Path("/jumoreski")
 public class Jumoreski {
-    private static final File JUMORESKI = Files.getFile("jumoreski.txt");
+    public static final File JUMORESKI = Files.getFile("jumoreski.txt");
     @Inject
     protected Service service;
 
