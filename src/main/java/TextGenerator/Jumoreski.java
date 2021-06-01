@@ -16,6 +16,7 @@ import java.io.File;
 @Path("/jumoreski")
 public class Jumoreski {
     public static final File JUMORESKI = Files.getFile("jumoreski.txt");
+
     @Inject
     protected Service service;
 
@@ -31,6 +32,7 @@ public class Jumoreski {
         log.debug("Current length of jumoreski is " + length);
         return service.source(JUMORESKI, length, depth);
     }
+
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<String> jumoreski() {

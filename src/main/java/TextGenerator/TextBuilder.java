@@ -222,7 +222,7 @@ public class TextBuilder extends SecurityManager {
                 // only if something goes wrong
                 throw new UnexpectedException("NO NEXT WORD");
             } catch (UnexpectedException e) {
-                // e.printStackTrace();
+                log.error(e.getMessage());
             }
             return null;
         }

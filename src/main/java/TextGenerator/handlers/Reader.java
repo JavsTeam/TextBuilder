@@ -22,12 +22,11 @@ public class Reader {
                 text.append("\n");
             }
         } catch (IOException e) {
-            log.warn(e.getMessage() + "\nError happened while trying to readTxt!");
+            log.error(e.getMessage() + "\nError happened while trying to readTxt!");
         }
-        log.trace("Successfully read!");
+        log.info("Successfully read!");
         return text.toString();
     }
-
     public static String readTxt(File txtFile) {
         return readTxt(txtFile.getPath());
     }

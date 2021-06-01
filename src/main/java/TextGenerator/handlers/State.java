@@ -31,7 +31,7 @@ public class State {
     public void save(HashMap<String, ?> state) {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         String stateString = builder.create().toJson(state);
-        log.info("getStateFile " + getStateFile().getName() + " " + getStateFile().getAbsolutePath());
+        log.debug("getStateFile " + getStateFile().getName() + " " + getStateFile().getAbsolutePath());
         Writer.writeTextTo(stateString, getStateFile());
     }
 

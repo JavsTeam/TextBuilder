@@ -16,7 +16,7 @@ public class Writer {
             log.info("Trying to write text...");
             writer.write(text);
         } catch (IOException e) {
-            log.warn(e.getMessage() + "\nError happen in the writeTextTo attempt");
+            log.error(e.getMessage() + "\nError happen in the writeTextTo attempt");
         }
     }
 

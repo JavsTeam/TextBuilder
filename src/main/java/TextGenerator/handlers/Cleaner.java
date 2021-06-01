@@ -19,7 +19,7 @@ public class Cleaner {
                 text.append(line).append(" ");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         String result = deleteFromTextIfContains(forbidden, text.toString());

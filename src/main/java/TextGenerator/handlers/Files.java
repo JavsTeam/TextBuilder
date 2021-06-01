@@ -53,7 +53,7 @@ public class Files {
         } catch (IOException e) {
             log.error(e.getMessage()  + "\nError happened while trying to createFile!");
         }
-        log.warn("null returned in createFile. Seems abnormal");
+        log.debug("null returned in createFile. Seems abnormal");
         return null;
     }
 
@@ -112,7 +112,7 @@ public class Files {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.warn("null returned in createDirectory. Seems abnormal");
+        log.debug("null returned in createDirectory. Seems abnormal");
         return null;
     }
 
@@ -124,7 +124,7 @@ public class Files {
                     return result;
                 }
             }
-            log.warn("null returned in recursiveFileSearch. Cautious");
+            log.debug("null returned in recursiveFileSearch. Cautious");
             return null;
         } else {
             return current.getName().equals(fileName) ? current : null;
@@ -144,13 +144,13 @@ public class Files {
                 }
             }
         }
-        log.warn("null returned in recursiveDirSearch. Cautious");
+        log.debug("null returned in recursiveDirSearch. Cautious");
         return null;
     }
 
     public enum Dir {
-        // SRC(new File(path.toAbsolutePath().toString())), // For Docker one
-        SRC(new File("/home/binocla/IdeaProjects/getting-started/src/main/resources")), // For Classic Launch
+        SRC(new File(path.toAbsolutePath().toString())), // For Docker one
+        // SRC(new File("/home/binocla/IdeaProjects/getting-started/src/main/resources")), // For Classic Launch
         DATA(getDirectory("data")),
         PROCESSED(getDirectory("processed")),
         FILES(getDirectory("files"));
