@@ -30,6 +30,9 @@ public class Bugurts {
         if (depth > 2) {
             depth = 4;
         }
+        if (length > 20000) {
+            length = 20000;
+        }
         log.debug("Current depth of bugurts is " + depth);
         log.debug("Current length of bugurts is " + length);
         return service.source(BUGURTS, length, depth);

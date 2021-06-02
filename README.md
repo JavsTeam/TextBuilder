@@ -11,8 +11,12 @@ Docker Build: *docker build -f src/main/docker/Dockerfile.jvm -t binocla/textgen
 
 Docker Run: *docker run -i --rm -p 8080:8080 binocla/textgenerator*
 
-
-### TODO:
-Look forward to introducing Apache Kafka with Zookeeper.
-Check up new features and dig up into Reactive development
-
+### Heroku Deploy:
+1) Build Image with "mvn clean package -DskipTests" for example
+2) Build Docker Image: docker build -f src/main/docker/Dockerfile.jvm -t textgenerator .
+3) Login to Heroku by: heroku login
+4) Create Cluster if needed: heroku create textgenerator --region eu
+5) Login to container hub: heroku container:login
+6) Tag Image for better code reading: docker tag textgenerator:latest registry.heroku.com/binoclatextgenerator/web
+7) Push Image to Heroku: docker push registry.heroku.com/binoclatextgenerator/web
+8) Release Image: heroku container:release web -a <app_name>

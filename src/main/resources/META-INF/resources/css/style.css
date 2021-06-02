@@ -1,0 +1,231 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+
+html{
+    box-sizing: border-box;
+}
+*, *::before, *::after{
+    box-sizing: inherit;
+}
+body{
+    font-family:sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1.2;
+    color: #000000;
+    overflow-y: scroll;
+    background-color: rgba(94, 194, 248,0.3);
+}
+.wrapper{
+    margin: 0 auto;
+}
+#header{
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: white;
+    border-bottom:1px solid rgba(0,0,0,0.25);
+    z-index: 2;
+}
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+#textBuilder{
+    margin-left: 160px;
+    width: fit-content;
+    font-family:sans-serif;
+    font-style: normal;
+    font-size: 30px;
+    padding: 20px;
+}
+#accountCircle{
+}
+#container2{
+    width: fit-content;
+    position: relative;
+    margin-left: 130px;
+}
+#userName{
+    font-family:sans-serif;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 23,44px;
+
+}
+#linkes{
+    top:18px;
+    position: fixed;
+    right: 160px;
+}
+#osnova{
+    height: fit-content;
+    margin-top: 80px;
+    margin-left:160px;
+    margin-right: 160px;
+    background-color: white;
+    box-shadow: 0 15px 20px #48B9F6;
+}
+#leftBlock{
+    position: fixed;
+    left: 160px;
+    align-content: center;
+    width: 312px;
+    top: 80px;
+    bottom: 0;
+}
+#button{
+    position: fixed;
+    margin-top: 200px;
+    margin-left: 40px;
+}
+.floating-button {
+    text-decoration: none;
+    display: inline-block;
+    width: 170px;
+    height: 50px;
+    line-height: 45px;
+    border-radius: 45px;
+    margin-bottom: 20px;
+    margin-top: 100px;
+    margin-left: 30px;
+    font-family: sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 3px;
+    font-weight: 600;
+    color: white;
+    background:#48B9F6;
+    box-shadow: 0 8px 15px #48B9F6;
+    transition: .3s;
+}
+.floating-button:hover {
+    font-family:sans-serif ;
+    background: rgba(72, 185, 246, .4);
+    box-shadow: 0 15px 20px #48B9F6;
+    color: white;
+    transform: translateY(-7px);
+}
+
+#source{
+    position: fixed;
+    margin-left: 40px;
+    margin-top: 30px;
+}
+ul.settings{
+    margin-top: 70px;
+}
+ul.settings li{
+    margin-bottom: 15px;
+}
+#top{
+    z-index: 2;
+    position: fixed;
+    right: 160px;
+    left: 472px;
+    height: 80px;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    border-left: 1px solid rgba(0,0,0,0.25);
+    background-color: white;
+}
+#rightBlock{
+    z-index: 1;
+    position: relative;
+    display: block;
+    width: 100%;
+    margin-left: 312px;
+    margin-top: 80px;
+    border-left: 1px solid rgba(0,0,0,0.25);
+}
+
+ul.hr {
+    width: 100%;
+    padding-top: 30px;
+}
+.content{
+    display: inline-block;
+}
+ul.hr li.left {
+    padding-left: 5%;
+    width: 30%;
+    float: left;
+}
+ul.hr li.right {
+    width: 30%;
+    float: right;
+    text-align: right;
+    padding-right: 5%;
+}
+ul.hr li.center {
+    text-align: center;
+}
+
+#jokesHolder{
+    position: relative;
+    width: 100%;
+}
+ul.jokesHolder{
+    margin: 0;
+    padding-top: 30px;
+}
+ul.jokesHolder li{
+    margin-right: 5px;
+    padding: 30px;
+}
+.jokes{
+    width: 70%; height: 30%;
+    background: white;
+    border: 3px solid rgba(0,0,0,0.25);
+    border-radius: 10px;
+    padding: 15px;
+}
+.jokes:hover{
+    border: 2px solid #48B9F6;
+}

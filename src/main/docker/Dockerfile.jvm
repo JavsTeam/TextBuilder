@@ -40,7 +40,7 @@ RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
     && echo "securerandom.source=file:/dev/urandom" >> /etc/alternatives/jre/conf/security/java.security
 
 # Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
-ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV JAVA_OPTIONS="-Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 # We make four distinct layers so if there are application changes the library layers can be re-used
@@ -50,9 +50,6 @@ COPY --chown=1001 target/quarkus-app/app/ /src/app/
 COPY --chown=1001 target/quarkus-app/quarkus/ /src/quarkus/
 COPY --chown=1001 target/quarkus-app/data/ /src/data/
 
-# RUN ls deployments
-
-EXPOSE 8080
 USER 1001
-
-ENTRYPOINT [ "/src/run-java.sh" ]
+ENTRYPOINT ["java"]
+CMD  ["-Dquarkus.http.port=${PORT}", "-Dquarkus.http.host=0.0.0.0", "-jar", "/src/quarkus-run.jar"]

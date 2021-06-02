@@ -5,10 +5,7 @@ import io.smallrye.mutiny.Uni;
 import lombok.extern.jbosslog.JBossLog;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 
@@ -27,6 +24,9 @@ public class Jumoreski {
                                  @PathParam("depth") int depth) {
         if (depth > 2) {
             depth = 4;
+        }
+        if (length > 20000) {
+            length = 20000;
         }
         log.debug("Current depth of jumoreski is " + depth);
         log.debug("Current length of jumoreski is " + length);

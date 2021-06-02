@@ -149,7 +149,7 @@ public class Files {
     }
 
     public enum Dir {
-        SRC(new File(path.toAbsolutePath().toString())), // For Docker one
+        SRC(new File("src")), // For Docker one
         // SRC(new File("/home/binocla/IdeaProjects/getting-started/src/main/resources")), // For Classic Launch
         DATA(getDirectory("data")),
         PROCESSED(getDirectory("processed")),
@@ -157,7 +157,7 @@ public class Files {
 
         File dir;
 
-        Dir(File dir) {
+        Dir(@SuppressWarnings("CdiInjectionPointsInspection") File dir) {
             this.dir = dir;
         }
 
