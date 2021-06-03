@@ -33,10 +33,12 @@ public class TextBuilder extends SecurityManager {
         this.sourceTxtPath = sourceTxtPath;
         state = new State(depth, sourceTxtPath);
         if (state.isExist()) {
+            log.debug("state is true");
             // Do not delete type argument
             words = state.get(new TypeToken<HashMap<String, Word>>() {
             });
         } else {
+            log.debug("state is false");
             parseWordsFromText(depth, Reader.readTxt(sourceTxtPath));
             saveState();
         }

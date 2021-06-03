@@ -8,24 +8,7 @@ import javax.ws.rs.core.MediaType;
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
-public class JumoreskiAndBugurtsTest {
-
-    @Test
-    public void testJumoreskiDefaultEndpoint() {
-        given()
-          .when().get("/jumoreski")
-          .then()
-             .statusCode(200)
-             .contentType(MediaType.TEXT_PLAIN);
-    }
-    @Test
-    public void testJumoreskiEndpoint() {
-        given()
-          .when().get("/jumoreski/300/2")
-          .then()
-             .statusCode(200)
-             .contentType(MediaType.TEXT_PLAIN);
-    }
+public class BugurtsTest {
     @Test
     public void testBugurtsDefaultEndpoint() {
         given()

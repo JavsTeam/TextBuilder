@@ -150,7 +150,8 @@ public class Files {
 
     public enum Dir {
         SRC(new File("src")), // For Docker one
-        // SRC(new File("/home/binocla/IdeaProjects/getting-started/src/main/resources")), // For Classic Launch
+        // SRC(new File("/home/binocla/IdeaProjects/getting-started/src/main/resources")), // For Classic Launch Without Target
+        // SRC(new File("/home/binocla/IdeaProjects/getting-started/target/classes")), // For Classic Launch
         DATA(getDirectory("data")),
         PROCESSED(getDirectory("processed")),
         FILES(getDirectory("files"));
