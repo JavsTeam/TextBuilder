@@ -1,21 +1,20 @@
 package TextGenerator.parsers;
 
 import TextGenerator.handlers.Writer;
-import lombok.extern.java.Log;
-
+import lombok.extern.jbosslog.JBossLog;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellType;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
-@Log
+@JBossLog
 public class XslxParser {
 
     public static void parseToTxt(String pathToXslx, String pathToTxt) {
         try {
-            log.info("Trying to parse...");
+            log.debug("Trying to parse...");
             XSSFWorkbook book = new XSSFWorkbook(new FileInputStream(pathToXslx));
             StringBuilder text = new StringBuilder();
             for (Row row : book.getSheetAt(0)) {
@@ -33,7 +32,7 @@ public class XslxParser {
             Writer.writeTextTo(text.toString(), pathToTxt);
             book.close();
         } catch (IOException e) {
-            log.warning(e.getMessage() + "\nError happened in parseToText attempt!");
+            log.warn(e.getMessage() + "\nError happened in parseToText attempt!");
         }
     }
 }
