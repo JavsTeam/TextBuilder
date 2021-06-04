@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getting-started - 1.0.0-SNAPSHOT</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem
+        }
+
+        h3 {
+            font-size: 1.75rem
+
+        }
+
+        h4 {
+            font-size: 1.5rem
+        }
+
+        h5 {
+            font-size: 1.25rem
+        }
+
+        h6 {
+            font-size: 1rem
+        }
+
+        .lead {
+            font-weight: 300;
+            font-size: 2rem;
+        }
+
+        .banner {
+            font-size: 2.7rem;
+            margin: 0;
+            padding: 2rem 1rem;
+            background-color: #0d1c2c;
+            color: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        code {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 87.5%;
+            color: #e83e8c;
+            word-break: break-word;
+        }
+
+        .left-column {
+            padding: .75rem;
+            max-width: 75%;
+            min-width: 55%;
+        }
+
+        .right-column {
+            padding: .75rem;
+            max-width: 25%;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        li {
+            margin: 0.75rem;
+        }
+
+        .right-section {
+            margin-left: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .right-section h3 {
+            padding-top: 0;
+            font-weight: 200;
+        }
+
+        .right-section ul {
+            border-left: 0.3rem solid #71aeef;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .example-code {
+            border-left: 0.3rem solid #71aeef;
+            padding-left: 10px;
+        }
+
+        .example-code h3 {
+            font-weight: 200;
+        }
+    </style>
+</head>
+<body>
+
+<div class="banner lead">
+    TextBuilder is ready for the flight!
+</div>
+
+<div class="container">
+    <div class="left-column">
+        <p class="lead"> Ура! Наше приложение работает =)</p>
+
+        <h2>Что тут есть?</h2>
+
+        <p>Ресурсы хранятся по этому пути:
+            <code>src/main/resources/META-INF/resources/index.html</code>.</p>
+
+        <h2>Что еще?</h2>
+
+        <p>Quarkus позволял использовать <em>dev mode</em> через: <code>./mvnw compile quarkus:dev</code>.
+        </p>
+        <ul>
+            <li>Ресурсы находятся <code>src/main/resources/META-INF/resources</code>.</li>
+            <li>Конфиг <code>src/main/resources/application.properties</code>.</li>
+            <li>Quarkus поставляется с <a href="/q/dev/">Dev UI</a> (available in dev mode only)</li>
+            <li>Код в <code>src/main/java</code>:</li>
+        </ul>
+        <div class="example-code">
+            <h3>Jumoreski Example</h3>
+            <p><code>@Path: <a href="/jumoreski" class="path-link" target="_blank">/jumoreski</a></code></p>
+            <h3>Bugurts Example</h3>
+            <p><code>@Path: <a href="/bugurts" class="path-link" target="_blank">/bugurts</a></code></p>
+            <h3>News Example</h3>
+            <p><code>@Path: <a href="/news" class="path-link" target="_blank">/news</a></code></p>
+            <h3>Quotes Example</h3>
+            <p><code>@Path: <a href="/quotes" class="path-link" target="_blank">/quotes</a></code></p>
+            <h3>Story Example</h3>
+            <p><code>@Path: <a href="/story" class="path-link" target="_blank">/story</a></code></p>
+        </div>
+
+    </div>
+    <div class="right-column">
+        <div class="right-section">
+            <h3>Приложение</h3>
+            <ul>
+                <li>GroupId: <code>org.javsteam</code></li>
+                <li>ArtifactId: <code>TEXTBUILDER</code></li>
+                <li>Version: <code>1.0.0-RELEASE</code></li>
+                <li>Quarkus Version: <code>1.13.6.Final</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
